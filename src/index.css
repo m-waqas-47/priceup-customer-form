@@ -5,9 +5,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #F6F5FF;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+  border-radius: 10px; /* Set the color of the scrollbar thumb */
+}
+.MuiTypography-root {
+  font-family: "Manrope", sans-serif !important;
+}
+.MuiButton-root {
+  text-transform: capitalize !important;
+  border-radius: 8px !important;
+  padding: 10px 16px 10px 16px !important;
+  font-family: "Manrope", sans-serif !important;
+  line-height: 21.86px !important;
 }
