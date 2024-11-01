@@ -14,7 +14,8 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import CustomInputField from "../ui-components/CustomInput";
-import { Delete, ExpandMore, KeyboardArrowRight } from "@mui/icons-material";
+import {  ExpandMore, KeyboardArrowRight } from "@mui/icons-material";
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -349,7 +350,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
                     }}
                   >
                     <AccordionSummary
-                      expandIcon={<ExpandMore sx={{ color: "#8477DA" }} />}
+                      expandIcon={<ExpandMore sx={{ color: "#5D6164" }} />}
                       aria-controls={`panel${index}-content`}
                       id={`panel${index}-header`}
                       sx={{
@@ -366,14 +367,13 @@ const ReviewsAndSubmit = ({ next, back }) => {
                           fontSize: "18px",
                           fontWeight: 500,
                           lineHeight: "21px",
-                          color: "#9088C0",
                         }}
                       >
                         Estimate Quote for {data?.layout?.name}
                       </Typography>
-                      <Delete
+                      <DeleteOutlineOutlinedIcon
                         sx={{
-                          color: "red",
+                          color: "#E22A2D",
                           cursor: "pointer",
                           marginLeft: "auto",
                         }} // Style the delete icon

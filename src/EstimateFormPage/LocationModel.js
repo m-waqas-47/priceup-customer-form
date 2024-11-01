@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { getLocation, setLocation } from "../redux/globalEstimateForm";
 import { useDispatch, useSelector } from "react-redux";
+import logo from '../Assets/Location-Icon.png'
 
 function LocationModel({}) {
   const Location = useSelector(getLocation);
@@ -26,7 +27,7 @@ function LocationModel({}) {
     left: "50%",
     gap: "19px",
     transform: "translate(-50%, -50%)",
-    width: isMobile ? 292 : 383,
+    width: isMobile ? 292 : 410,
     bgcolor: "#FFFFFF",
     border: "1px solid #D0D5DD",
     p: { sm: "24px 16px", xs: 2 },
@@ -58,7 +59,7 @@ function LocationModel({}) {
               >
                 Select Location
               </Typography>
-              <Typography
+              {/* <Typography
                 sx={{
                   color: "#212528",
                   lineHeight: "21.86px",
@@ -69,39 +70,67 @@ function LocationModel({}) {
                 }}
               >
                 Select Your Location.
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
-          <FormControl
-            sx={{ width: "100%" }}
-            size="small"
-            className="custom-textfield"
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              px: 2,
+              py: 4,
+              background: "#F3F5F6",
+              borderRadius: "12px",
+            }}
           >
-            <Select
-              name="location"
-              value={Location}
-              size="small"
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              className="hardwareSelect"
+             <Box>
+              <img src={logo} alt="delete icon" style={{height:'30px'}} />
+            </Box>
+            <Typography
               sx={{
-                height: "40px",
-                background: "#F6F5FF",
-                ".MuiOutlinedInput-input": {
-                  p: "10px !important",
-                },
+                color: "#212528",
+                lineHeight: '21.86px',
+                fontWeight: 600,
+                fontSize: 16,
+                opacity:'70%'
               }}
-              onChange={handleLocationChange}
-              displayEmpty
-              placeholder="Select Location"
             >
-              <MenuItem value="">
-                <em>Select Location</em>
-              </MenuItem>
-              <MenuItem value="Test Name">Test Name</MenuItem>
-              <MenuItem value="Test Name 1">Test Name 1</MenuItem>
-            </Select>
-          </FormControl>
+              Select Yours Location.
+            </Typography>
+            <FormControl
+              sx={{ width: "100%" }}
+              size="small"
+              className="custom-textfield"
+            >
+              <Select
+                name="location"
+                value={Location}
+                size="small"
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                className="hardwareSelect"
+                sx={{
+                  height: "40px",
+                  background: "#F6F5FF",
+                  ".MuiOutlinedInput-input": {
+                    p: "10px !important",
+                  },
+                }}
+                onChange={handleLocationChange}
+                displayEmpty
+                placeholder="Select Location"
+              >
+                <MenuItem value="">
+                  <em>Select Location</em>
+                </MenuItem>
+                <MenuItem value="Test Name">GCS Denver</MenuItem>
+                <MenuItem value="Test Name 1">GCS Austin</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
       </Modal>
     </>
