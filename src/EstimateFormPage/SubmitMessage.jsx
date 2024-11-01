@@ -7,10 +7,10 @@ import { resetFormState } from "../redux/globalEstimateForm";
 import { useDispatch } from "react-redux";
 
 const SubmitMessage = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleBack = () => {
-    dispatch(resetFormState())
+    dispatch(resetFormState());
     navigate("/");
   };
   return (

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 export const getProjectDetails = (state) =>
   state.globalEstimateForm.projectDetails;
+export const getLocation = (state) => state.globalEstimateForm.location;
 export const getEstimateCategory = (state) => state.globalEstimateForm.category;
 export const getEstimateLayout = (state) => state.globalEstimateForm.layout;
 export const getEstimateDetail = (state) =>
@@ -9,14 +10,15 @@ export const getReviewDetail = (state) =>
   state.globalEstimateForm.reviewDetails;
 export const getEstimates = (state) => state.globalEstimateForm.estimates;
 
-const initialState =  {
+const initialState = {
+  location: "",
   projectDetails: {},
   category: "",
   layout: "",
   estimateDetails: {},
   reviewDetails: {},
   estimates: [],
-}
+};
 
 const globalEstimateForm = createSlice({
   name: "globalEstimateForm",
@@ -25,7 +27,11 @@ const globalEstimateForm = createSlice({
     resetFormState: (state) => {
       return {
         ...initialState,
+        location: state.location,
       };
+    },
+    setLocation: (state, action) => {
+      state.location = action.payload;
     },
     setProjectDetails: (state, action) => {
       state.projectDetails = action.payload;
@@ -45,15 +51,22 @@ const globalEstimateForm = createSlice({
     setEstimatesCollection: (state, action) => {
       state.estimates = [...state.estimates, action.payload];
     },
+    deleteCollectionItem: (state, action) => {
+      state.estimates = state.estimates.filter(
+        (estimate) => estimate.id !== action.payload
+      );
+    },
   },
 });
 export const {
   resetFormState,
+  setLocation,
   setProjectDetails,
   setEstimateCategory,
   setEstimateLayout,
   setEstimateDetail,
   setReviewDetail,
   setEstimatesCollection,
+  deleteCollectionItem,
 } = globalEstimateForm.actions;
 export default globalEstimateForm.reducer;

@@ -23,6 +23,7 @@ import {
 import bgCustom from "../Assets/customlayoutimage.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { v4 as uuidv4 } from 'uuid';
 
 const CreateEstimateSection = ({ next, back }) => {
   const dispatch = useDispatch();
@@ -60,7 +61,6 @@ const CreateEstimateSection = ({ next, back }) => {
     hardware: Yup.string().required("Please select a hardware finish option"),
     hingeType: Yup.string().required("Please select a hinge type "),
     handleType: Yup.string().required("Please select a handle type "),
-    lock: Yup.string().required("Please select a lock"),
   });
 
   const formik = useFormik({
@@ -88,12 +88,12 @@ const CreateEstimateSection = ({ next, back }) => {
       dispatch(setEstimateDetail(values));   
       next();
       const estimateData = {
+        id:uuidv4(),
         category: EstimateCategory,
         layout: getSelectedLayout,
         estimateDetail: values,
       };
       dispatch(setEstimatesCollection(estimateData))
-      console.log(values,estimateData);
     },
   });
 
@@ -177,6 +177,112 @@ const CreateEstimateSection = ({ next, back }) => {
             >
               Select Your Customizations
             </Typography>
+              {/* Dimensions Section */}
+              <Box sx={{ pt: 5 }}>
+              <Typography
+                sx={{
+                  fontSize: { lg: 24, md: 20 },
+                  fontWeight: 600,
+                  color: "#000000",
+                  display: "flex",
+                  lineHeight: "32.78px",
+                  gap: 1,
+                }}
+              >
+                Dimensions
+              </Typography>
+              <Grid container spacing={2}>
+                {Array.from({
+                  length: getSelectedLayout?.settings?.measurementSides || 0,
+                }).map((_, index) => (
+                  <Grid item md={3} xs={6} key={index}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: { sm: "start", xs: "center" },
+                        flexDirection: { sm: "column", xs: "row" },
+                        gap: { sm: "10px", xs: 1 },
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          fontSize: "16px",
+                          fontWeight: 600,
+                          lineHeight: "21.86px",
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            mr: 0.5,
+                            fontSize: "16px",
+                            fontWeight: 600,
+                            lineHeight: "21.86px",
+                          }}
+                        >
+                          {String.fromCharCode(97 + index)}
+                        </Typography>
+                        <Tooltip title={""}>
+                          <InfoOutlined
+                            sx={{
+                              width: "13px",
+                              height: "13px",
+                              color: "#959EA3",
+                            }}
+                          />
+                        </Tooltip>
+                      </Box>
+                      <TextField
+                        type="number"
+                        size="small"
+                        variant="outlined"
+                        name={String.fromCharCode(97 + index)}
+                        placeholder={String.fromCharCode(97 + index)}
+                        className="custom-textfield-purple"
+                        sx={{
+                          borderRadius: "8px",
+                          border: "1px solid #D0D5DD",
+                          width: "100%",
+                          maxWidth: "250px",
+                          "& input": { padding: "10px" },
+                        }}
+                        value={formik.values[String.fromCharCode(97 + index)]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched[String.fromCharCode(97 + index)] &&
+                          Boolean(
+                            formik.errors[String.fromCharCode(97 + index)]
+                          )
+                        }
+                        // helperText={
+                        //   formik.touched[String.fromCharCode(97 + index)] &&
+                        //   formik.errors[String.fromCharCode(97 + index)]
+                        //     ? `${
+                        //         formik.errors[String.fromCharCode(97 + index)]
+                        //       }. Please enter a valid value.`
+                        //     : ""
+                        // }
+                      />
+                    </Box>
+                    {formik.touched[String.fromCharCode(97 + index)] &&
+                      formik.errors[String.fromCharCode(97 + index)] && (
+                        <Typography
+                          sx={{
+                            color: "red",
+                            fontSize: "12px",
+                            mt: "4px",
+                          }}
+                        >
+                          {formik.errors[String.fromCharCode(97 + index)]}.
+                        </Typography>
+                      )}
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+            <hr style={{ marginTop: "40px" }} />
             {/* Glass Finish Options */}
             <Box sx={{ pt: 5 }}>
               <Typography
@@ -565,126 +671,8 @@ const CreateEstimateSection = ({ next, back }) => {
                   />
                 </Box>
               </>
-              {formik.touched.lock && formik.errors.lock && (
-                <Typography
-                  sx={{
-                    color: "red",
-                    fontSize: "12px",
-                    mt: "4px",
-                  }}
-                >
-                  {formik.errors.lock}
-                </Typography>
-              )}
             </Box>
-            <hr style={{ mt: "40px" }} />
-
-            {/* Dimensions Section */}
-            <Box sx={{ pt: 5 }}>
-              <Typography
-                sx={{
-                  fontSize: { lg: 24, md: 20 },
-                  fontWeight: 600,
-                  color: "#000000",
-                  display: "flex",
-                  lineHeight: "32.78px",
-                  gap: 1,
-                }}
-              >
-                Dimensions
-              </Typography>
-              <Grid container spacing={2}>
-                {Array.from({
-                  length: getSelectedLayout?.settings?.measurementSides || 0,
-                }).map((_, index) => (
-                  <Grid item md={3} xs={6} key={index}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: { sm: "start", xs: "center" },
-                        flexDirection: { sm: "column", xs: "row" },
-                        gap: { sm: "10px", xs: 1 },
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          fontSize: "16px",
-                          fontWeight: 600,
-                          lineHeight: "21.86px",
-                        }}
-                      >
-                        <Typography
-                          sx={{
-                            mr: 0.5,
-                            fontSize: "16px",
-                            fontWeight: 600,
-                            lineHeight: "21.86px",
-                          }}
-                        >
-                          {String.fromCharCode(97 + index)}
-                        </Typography>
-                        <Tooltip title={""}>
-                          <InfoOutlined
-                            sx={{
-                              width: "13px",
-                              height: "13px",
-                              color: "#959EA3",
-                            }}
-                          />
-                        </Tooltip>
-                      </Box>
-                      <TextField
-                        type="number"
-                        size="small"
-                        variant="outlined"
-                        name={String.fromCharCode(97 + index)}
-                        placeholder={String.fromCharCode(97 + index)}
-                        className="custom-textfield-purple"
-                        sx={{
-                          borderRadius: "8px",
-                          border: "1px solid #D0D5DD",
-                          width: "100%",
-                          maxWidth: "250px",
-                          "& input": { padding: "10px" },
-                        }}
-                        value={formik.values[String.fromCharCode(97 + index)]}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched[String.fromCharCode(97 + index)] &&
-                          Boolean(
-                            formik.errors[String.fromCharCode(97 + index)]
-                          )
-                        }
-                        // helperText={
-                        //   formik.touched[String.fromCharCode(97 + index)] &&
-                        //   formik.errors[String.fromCharCode(97 + index)]
-                        //     ? `${
-                        //         formik.errors[String.fromCharCode(97 + index)]
-                        //       }. Please enter a valid value.`
-                        //     : ""
-                        // }
-                      />
-                    </Box>
-                    {formik.touched[String.fromCharCode(97 + index)] &&
-                      formik.errors[String.fromCharCode(97 + index)] && (
-                        <Typography
-                          sx={{
-                            color: "red",
-                            fontSize: "12px",
-                            mt: "4px",
-                          }}
-                        >
-                          {formik.errors[String.fromCharCode(97 + index)]}.
-                        </Typography>
-                      )}
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-            <hr style={{ marginTop: "40px" }} />
+            <hr style={{ mt: "40px" }} />          
           </Box>
         </Stack>
         <Stack

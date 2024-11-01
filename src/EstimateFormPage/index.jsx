@@ -20,7 +20,7 @@ import SelectCategorySection from "./SelectCategorySection";
 import SelectLayoutSection from "./SelectLayoutSection";
 import CreateEstimateSection from "./CreateEstimateSection";
 import ReviewsAndSubmit from "./ReviewsAndSubmit";
-import { Link } from "react-router-dom";
+import LocationModel from "./LocationModel";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -74,7 +74,7 @@ function ColorlibStepIcon(props) {
 }
 
 const steps = [
-  "Create Project",
+  // "Create Project",
   "Select Category",
   "Select Layout",
   "Create Estimate",
@@ -87,14 +87,12 @@ const EstimateFormPage = () => {
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
   const customStepBack = (step) => {
     setActiveStep(step);
   };
-
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -111,26 +109,9 @@ const EstimateFormPage = () => {
             py: 1,
           }}
         >
-          <Box component='a' href="http://priceup.glass/">
+          <Box component="a" href="http://priceup.glass/">
             <img src={LogoNavBar} alt="logo nav bar" />
           </Box>
-          {/* <Link to="/">
-            <Button
-              // size="medium"
-              sx={{
-                bgcolor: "#8477DA",
-                color: "white",
-                textTransform: "capitalize",
-                width: { md: "190px", xs: "120px" },
-                height: { md: "50px", xs: "40px" },
-                ":hover": {
-                  bgcolor: "#8477DA",
-                },
-              }}
-            >
-              Client Login
-            </Button>
-          </Link> */}
         </Box>
       </Box>
       <Container maxWidth="xl" sx={{ pt: 2.5 }}>
@@ -167,55 +148,35 @@ const EstimateFormPage = () => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              {activeStep === 0 ? (
+              {
+              // activeStep === 0 ? (
+              //   <Box sx={{ mt: 2, mb: 1 }}>
+              //     <CreateProjectSection next={handleNext} back={handleBack} />
+              //   </Box>
+              // ) : 
+              activeStep === 0 ? (
                 <Box sx={{ mt: 2, mb: 1 }}>
-                  {/* Step 1{" "} */}
-                  <CreateProjectSection next={handleNext} back={handleBack} />
-                  {/* <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button> */}
+                  <SelectCategorySection next={handleNext} back={handleBack} />
                 </Box>
               ) : activeStep === 1 ? (
                 <Box sx={{ mt: 2, mb: 1 }}>
-                  <SelectCategorySection next={handleNext} back={handleBack} />
-                  {/* <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button> */}
+                  <SelectLayoutSection next={handleNext} back={handleBack} />
                 </Box>
               ) : activeStep === 2 ? (
                 <Box sx={{ mt: 2, mb: 1 }}>
-                  <SelectLayoutSection next={handleNext} back={handleBack} />
-                  {/* <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button> */}
+                  <CreateEstimateSection next={handleNext} back={handleBack} />
                 </Box>
               ) : activeStep === 3 ? (
                 <Box sx={{ mt: 2, mb: 1 }}>
-                  <CreateEstimateSection next={handleNext} back={handleBack} />
-                </Box>
-              ) : activeStep === 4 ? (
-                <Box sx={{ mt: 2, mb: 1 }}>
                   <ReviewsAndSubmit next={handleReset} back={customStepBack} />
-                  {/* <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                  </Button> */}
                 </Box>
               ) : (
                 "Not set"
               )}
-              {/* <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-            </Box> */}
             </React.Fragment>
           )}
         </Stack>
+        <LocationModel/>
       </Container>
     </>
   );
