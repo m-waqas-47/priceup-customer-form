@@ -1,10 +1,11 @@
-import { Box, Button, Stack, Typography, Grid, Container } from "@mui/material";
+import { Box, Button,  Typography, Container } from "@mui/material";
 import React from "react";
 import LogoNavBar from "../Assets/purplelogo.svg";
 import { KeyboardArrowRight } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { resetFormState } from "../redux/globalEstimateForm";
 import { useDispatch } from "react-redux";
+import Header from "../ui-components/Header";
 
 const SubmitMessage = () => {
   const dispatch = useDispatch();
@@ -15,21 +16,7 @@ const SubmitMessage = () => {
   };
   return (
     <>
-      <Box sx={{ bgcolor: "#100D24", width: "100%" }}>
-        <Box
-          sx={{
-            width: "90%",
-            m: "auto",
-            display: "flex",
-            justifyContent: "center",
-            py: 1,
-          }}
-        >
-          <Box component="a" href="http://priceup.glass/">
-            <img src={LogoNavBar} alt="logo nav bar" />
-          </Box>
-        </Box>
-      </Box>
+       <Header />
       <Container maxWidth="xl" sx={{ pt: 2.5 }}>
         <Box
           sx={{

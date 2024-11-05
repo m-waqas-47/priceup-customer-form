@@ -139,7 +139,7 @@ const SelectLayoutSection = ({ next, back }) => {
                 >
                   Select Layout
                 </Typography>
-                <Typography
+                {/* <Typography
                   sx={{
                     color: { md: "#667085", xs: "white" },
                     font: "14px",
@@ -148,7 +148,7 @@ const SelectLayoutSection = ({ next, back }) => {
                 >
                   Your new project has been created. Invite colleagues to
                   collaborate on this project.
-                </Typography>
+                </Typography> */}
               </Box>
 
               <CustomInputField

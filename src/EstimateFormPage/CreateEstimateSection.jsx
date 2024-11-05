@@ -103,11 +103,11 @@ const CreateEstimateSection = ({ next, back }) => {
     EstimateCategory === selectedCategory.MIRRORS
       ? {}
       : {
-          hingeType: Yup.object().shape({
+          hinge: Yup.object().shape({
             _id: Yup.string().required("Please select a hinge type"),
             name: Yup.string().required("Please select a hinge type"),
           }),
-          handleType: Yup.object().shape({
+          handle: Yup.object().shape({
             _id: Yup.string().required("Please select a handle type"),
             name: Yup.string().required("Please select a handle type"),
           }),
@@ -130,8 +130,8 @@ const CreateEstimateSection = ({ next, back }) => {
     initialValues: {
       glass: EstimateDetails?.glass?._id ?? "",
       hardware: EstimateDetails?.hardware?._id ?? "",
-      hingeType: EstimateDetails?.hingeType?._id ?? "",
-      handleType: EstimateDetails?.handleType?._id ?? "",
+      hinge: EstimateDetails?.hinge?._id ?? "",
+      handle: EstimateDetails?.handle?._id ?? "",
       lock: EstimateDetails?.lock ?? "",
       ...customInitialState,
     },
@@ -179,7 +179,7 @@ const CreateEstimateSection = ({ next, back }) => {
           >
             Estimate Detail
           </Typography>
-          <Typography
+          {/* <Typography
             sx={{
               color: "#212528",
               fontSize: { lg: 16, md: 14 },
@@ -189,7 +189,7 @@ const CreateEstimateSection = ({ next, back }) => {
             }}
           >
             Create, edit and manage your Estimate.
-          </Typography>
+          </Typography> */}
         </Box>
         <Stack direction="row" sx={{ pt: 6, gap: 2 }}>
           <Box sx={{ width: "40%", display: "flex", justifyContent: "center" }}>
@@ -775,7 +775,7 @@ const CreateEstimateSection = ({ next, back }) => {
                             key={index}
                             sx={{
                               background:
-                                formik.values.handleType._id === value
+                                formik.values.handle._id === value
                                   ? "#F3F5F6"
                                   : "",
                               width: "175px",
@@ -784,7 +784,7 @@ const CreateEstimateSection = ({ next, back }) => {
                               cursor: "pointer",
                             }}
                             onClick={() =>
-                              formik.setFieldValue("handleType", data)
+                              formik.setFieldValue("handle", data)
                             }
                           >
                             <FormControlLabel
@@ -792,10 +792,10 @@ const CreateEstimateSection = ({ next, back }) => {
                               control={
                                 <Radio
                                   checked={
-                                    formik.values.handleType._id === value
+                                    formik.values.handle._id === value
                                   }
                                   onChange={() =>
-                                    formik.setFieldValue("handleType", data)
+                                    formik.setFieldValue("handle", data)
                                   }
                                   sx={{
                                     color: "#8477DA",
@@ -827,7 +827,7 @@ const CreateEstimateSection = ({ next, back }) => {
                         );
                       })}
                   </Grid>
-                  {formik.touched.handleType && formik.errors.handleType && (
+                  {formik.touched.handle && formik.errors.handle && (
                     <Typography
                       sx={{
                         color: "red",
@@ -835,7 +835,7 @@ const CreateEstimateSection = ({ next, back }) => {
                         mt: "4px",
                       }}
                     >
-                      {formik.errors.handleType.name}
+                      {formik.errors.handle.name}
                     </Typography>
                   )}
                 </Box>
@@ -863,7 +863,7 @@ const CreateEstimateSection = ({ next, back }) => {
                             key={index}
                             sx={{
                               background:
-                                formik.values.hingeType._id === value
+                                formik.values.hinge._id === value
                                   ? "#F3F5F6"
                                   : "",
                               width: "175px",
@@ -872,7 +872,7 @@ const CreateEstimateSection = ({ next, back }) => {
                               cursor: "pointer",
                             }}
                             onClick={() =>
-                              formik.setFieldValue("hingeType", data)
+                              formik.setFieldValue("hinge", data)
                             }
                           >
                             <FormControlLabel
@@ -880,10 +880,10 @@ const CreateEstimateSection = ({ next, back }) => {
                               control={
                                 <Radio
                                   checked={
-                                    formik.values.hingeType._id === value
+                                    formik.values.hinge._id === value
                                   }
                                   onChange={() =>
-                                    formik.setFieldValue("hingeType", data)
+                                    formik.setFieldValue("hinge", data)
                                   }
                                   sx={{
                                     color: "#8477DA",
@@ -915,7 +915,7 @@ const CreateEstimateSection = ({ next, back }) => {
                         );
                       })}
                   </Grid>
-                  {formik.touched.hingeType && formik.errors.hingeType && (
+                  {formik.touched.hinge && formik.errors.hinge && (
                     <Typography
                       sx={{
                         color: "red",
@@ -923,7 +923,7 @@ const CreateEstimateSection = ({ next, back }) => {
                         mt: "4px",
                       }}
                     >
-                      {formik.errors.hingeType.name}
+                      {formik.errors.hinge.name}
                     </Typography>
                   )}
                 </Box>

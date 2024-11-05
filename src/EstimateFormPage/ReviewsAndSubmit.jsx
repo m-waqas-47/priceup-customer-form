@@ -21,13 +21,10 @@ import {
   getEstimates,
   getLocation,
   getProjectDetails,
-  getReviewDetail,
   setEstimateCategory,
   setEstimateDetail,
   setEstimateLayout,
-  setEstimatesCollection,
   setProjectDetails,
-  setReviewDetail,
 } from "../redux/globalEstimateForm";
 import { useNavigate } from "react-router-dom";
 import { useCreateDocument } from "../utilities/apiHooks";
@@ -80,7 +77,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
       dispatch(setProjectDetails(values));
       const data = {
         location: Location,
-        ProjectDetail: values,
+        projectDetail: values,
         quotes: totalQuotes,
       };
       createEstimate({ data, apiRoute: `${backendURL}/form-request` });
@@ -182,9 +179,16 @@ const ReviewsAndSubmit = ({ next, back }) => {
                           flexDirection: "column",
                         }}
                       >
-                        <Box mb={0.6} >
-                          <label htmlFor="name" className="label-text" style={{display:'flex'}}>
-                            Project Name <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> 
+                        <Box mb={0.6}>
+                          <label
+                            htmlFor="name"
+                            className="label-text"
+                            style={{ display: "flex" }}
+                          >
+                            Project Name{" "}
+                            <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                              *
+                            </Box>
                           </label>
                         </Box>
                         <CustomInputField
@@ -436,8 +440,14 @@ const ReviewsAndSubmit = ({ next, back }) => {
                       }}
                     >
                       <Box sx={{ display: { sm: "block", xs: "none" } }}>
-                        <label htmlFor="customerDetail.firstName" style={{display:'flex'}}>
-                          First Name <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> 
+                        <label
+                          htmlFor="customerDetail.firstName"
+                          style={{ display: "flex" }}
+                        >
+                          First Name{" "}
+                          <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                            *
+                          </Box>
                         </label>
                       </Box>
                       <CustomInputField
@@ -480,8 +490,14 @@ const ReviewsAndSubmit = ({ next, back }) => {
                       }}
                     >
                       <Box sx={{ display: { sm: "block", xs: "none" } }}>
-                        <label htmlFor="customerDetail.lastName" style={{display:'flex'}}>
-                          Last Name <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> 
+                        <label
+                          htmlFor="customerDetail.lastName"
+                          style={{ display: "flex" }}
+                        >
+                          Last Name{" "}
+                          <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                            *
+                          </Box>
                         </label>
                       </Box>
                       <CustomInputField

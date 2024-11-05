@@ -54,12 +54,13 @@ const SelectCategorySection = ({ next }) => {
                 fontWeight: 700,
                 lineHeight: "21.09px",
                 fontFamily: '"Roboto",sans-serif !important',
+                pb: 1,
               }}
             >
               Select Category
             </Typography>
           </Box>
-          <Typography
+          {/* <Typography
             sx={{
               fontSize: "16px",
               fontWeight: 600,
@@ -70,7 +71,7 @@ const SelectCategorySection = ({ next }) => {
             }}
           >
             Select item for estimation
-          </Typography>
+          </Typography> */}
         </Stack>
         <Box
           sx={{

@@ -15,11 +15,13 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import LogoNavBar from "../Assets/purplelogo.svg";
+import GCSLogo from "../Assets/GCSLogo.png";
 import SelectCategorySection from "./SelectCategorySection";
 import SelectLayoutSection from "./SelectLayoutSection";
 import CreateEstimateSection from "./CreateEstimateSection";
 import ReviewsAndSubmit from "./ReviewsAndSubmit";
 import LocationModel from "./LocationModel";
+import Header from "../ui-components/Header";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -98,21 +100,7 @@ const EstimateFormPage = () => {
 
   return (
     <>
-      <Box sx={{ bgcolor: "#100D24", width: "100%" }}>
-        <Box
-          sx={{
-            width: "90%",
-            m: "auto",
-            display: "flex",
-            justifyContent: "center",
-            py: 1,
-          }}
-        >
-          <Box component="a" href="http://priceup.glass/">
-            <img src={LogoNavBar} alt="logo nav bar" />
-          </Box>
-        </Box>
-      </Box>
+      <Header />
       <Container maxWidth="xl" sx={{ pt: 2.5 }}>
         <Stack sx={{ width: "100%" }} spacing={4}>
           <Stepper
@@ -148,34 +136,44 @@ const EstimateFormPage = () => {
           ) : (
             <React.Fragment>
               {
-              // activeStep === 0 ? (
-              //   <Box sx={{ mt: 2, mb: 1 }}>
-              //     <CreateProjectSection next={handleNext} back={handleBack} />
-              //   </Box>
-              // ) : 
-              activeStep === 0 ? (
-                <Box sx={{ mt: 2, mb: 1 }}>
-                  <SelectCategorySection next={handleNext} back={handleBack} />
-                </Box>
-              ) : activeStep === 1 ? (
-                <Box sx={{ mt: 2, mb: 1 }}>
-                  <SelectLayoutSection next={handleNext} back={handleBack} />
-                </Box>
-              ) : activeStep === 2 ? (
-                <Box sx={{ mt: 2, mb: 1 }}>
-                  <CreateEstimateSection next={handleNext} back={handleBack} />
-                </Box>
-              ) : activeStep === 3 ? (
-                <Box sx={{ mt: 2, mb: 1 }}>
-                  <ReviewsAndSubmit next={handleReset} back={customStepBack} />
-                </Box>
-              ) : (
-                "Not set"
-              )}
+                // activeStep === 0 ? (
+                //   <Box sx={{ mt: 2, mb: 1 }}>
+                //     <CreateProjectSection next={handleNext} back={handleBack} />
+                //   </Box>
+                // ) :
+                activeStep === 0 ? (
+                  <Box sx={{ mt: 2, mb: 1 }}>
+                    <SelectCategorySection
+                      next={handleNext}
+                      back={handleBack}
+                    />
+                  </Box>
+                ) : activeStep === 1 ? (
+                  <Box sx={{ mt: 2, mb: 1 }}>
+                    <SelectLayoutSection next={handleNext} back={handleBack} />
+                  </Box>
+                ) : activeStep === 2 ? (
+                  <Box sx={{ mt: 2, mb: 1 }}>
+                    <CreateEstimateSection
+                      next={handleNext}
+                      back={handleBack}
+                    />
+                  </Box>
+                ) : activeStep === 3 ? (
+                  <Box sx={{ mt: 2, mb: 1 }}>
+                    <ReviewsAndSubmit
+                      next={handleReset}
+                      back={customStepBack}
+                    />
+                  </Box>
+                ) : (
+                  "Not set"
+                )
+              }
             </React.Fragment>
           )}
         </Stack>
-        <LocationModel/>
+        <LocationModel />
       </Container>
     </>
   );
