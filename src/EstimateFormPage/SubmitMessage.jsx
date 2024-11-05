@@ -40,8 +40,6 @@ const SubmitMessage = () => {
         >
           <Box
             sx={{
-              // background: "#F3F5F6",
-              // borderRadius: "12px",
               p: "24px 16px",
               height: "calc(100vh - 200px)",
               alignContent: "center",
@@ -67,7 +65,6 @@ const SubmitMessage = () => {
                     "&:hover": {
                       backgroundColor: "#8477da",
                     },
-                    //   maxWidth:'200px',
                     position: "relative",
                     fontWeight: 600,
                     fontSize: "16px",

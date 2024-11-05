@@ -9,15 +9,24 @@ export const getEstimateDetail = (state) =>
 export const getReviewDetail = (state) =>
   state.globalEstimateForm.reviewDetails;
 export const getEstimates = (state) => state.globalEstimateForm.estimates;
+export const getSelectedHardwares = (state) => state.globalEstimateForm.hardwares;
+export const getSelectedGlassTypes = (state) => state.globalEstimateForm.glassTypes;
+export const getSelectedFinishes = (state) => state.globalEstimateForm.finishes;
 
 const initialState = {
-  location: "",
+  location: {
+    id: "",
+    name: "",
+  },
   projectDetails: {},
   category: "",
   layout: "",
   estimateDetails: {},
   reviewDetails: {},
   estimates: [],
+  hardwares: [],
+  glassTypes: [],
+  finishes: [],
 };
 
 const globalEstimateForm = createSlice({
@@ -51,6 +60,15 @@ const globalEstimateForm = createSlice({
     setEstimatesCollection: (state, action) => {
       state.estimates = [...state.estimates, action.payload];
     },
+    setSelectedHardware: (state, action) => {
+      state.hardwares = action.payload;
+    },
+    setSelectedGlassType: (state, action) => {
+      state.glassTypes = action.payload;
+    },
+    setSelectedFinishes: (state, action) => {
+      state.finishes = action.payload;
+    },
     deleteCollectionItem: (state, action) => {
       state.estimates = state.estimates.filter(
         (estimate) => estimate.id !== action.payload
@@ -68,5 +86,8 @@ export const {
   setReviewDetail,
   setEstimatesCollection,
   deleteCollectionItem,
+  setSelectedHardware,
+  setSelectedGlassType,
+  setSelectedFinishes,
 } = globalEstimateForm.actions;
 export default globalEstimateForm.reducer;

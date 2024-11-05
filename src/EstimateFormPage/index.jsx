@@ -15,7 +15,6 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import LogoNavBar from "../Assets/purplelogo.svg";
-import CreateProjectSection from "./CreateProjectSection";
 import SelectCategorySection from "./SelectCategorySection";
 import SelectLayoutSection from "./SelectLayoutSection";
 import CreateEstimateSection from "./CreateEstimateSection";

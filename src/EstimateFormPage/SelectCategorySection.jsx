@@ -1,4 +1,4 @@
-import { EstimateCategory } from "../common.js";
+import { EstimateCategory } from "../utilities/common";
 import { Box, Button, Stack, Typography, Grid } from "@mui/material";
 import React, { useState } from "react";
 import DefaultIcon from "../Assets/columns.svg";
@@ -24,14 +24,13 @@ const boxStyles = {
   cursor: "pointer",
 };
 
-const SelectCategorySection = ({ next, back }) => {
+const SelectCategorySection = ({ next }) => {
   const dispatch = useDispatch();
   const getCategory = useSelector(getEstimateCategory)
   const [category, setCategory] = useState(getCategory ?? "");
   const handleBoxClick = (category) => {
     dispatch(setEstimateCategory(category))
     setCategory(category);
-    console.log(category)
   };
   return (
     <>
@@ -191,23 +190,8 @@ const SelectCategorySection = ({ next, back }) => {
         </Box>
         <Stack
           direction="row"
-          sx={{ pt: 3, justifyContent: "space-between", width: "100%" }}
+          sx={{ pt: 3, justifyContent: "end", width: "100%" }}
         >
-          <Button
-            sx={{
-              backgroundColor: "#8477DA",
-              "&:hover": {
-                backgroundColor: "#8477da",
-              },
-              position: "relative",
-              fontWeight: 600,
-              fontSize: "16px",
-            }}
-            variant="contained"
-            onClick={back}
-          >
-            <KeyboardArrowRightIcon sx={{ transform: "rotate(180deg)" }} /> Back
-          </Button>
           <Button
             sx={{
               backgroundColor: "#8477DA",

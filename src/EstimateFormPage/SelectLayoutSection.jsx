@@ -7,191 +7,23 @@ import {
   Grid,
   Stack,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CheckCircle, Close, KeyboardArrowRight } from "@mui/icons-material";
 import bgCustom from "../Assets/customlayoutimage.svg";
-import { backendURL } from "../common.js";
+import { backendURL, EstimateCategory } from "../utilities/common";
 import CustomInputField from "../ui-components/CustomInput";
 import icon from "../Assets/search-icon.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { getEstimateLayout, setEstimateLayout } from "../redux/globalEstimateForm";
-
-const layouts = [
-  {
-    _id: "65f29fcf47357207b5f19f7a",
-    name: "Door Panel & Return",
-    image: "images/layouts/layout_6.png",
-    company_id: "65f29fce47357207b5f19cd1",
-    createdAt: "2024-03-14T06:57:19.058Z",
-    updatedAt: "2024-09-06T06:49:48.093Z",
-    __v: 0,
-    settings: {
-      handles: { handleType: "65f29fce47357207b5f19cea", count: 1 },
-      hinges: { hingesType: "65f29fce47357207b5f19d42", count: 2 },
-      pivotHingeOption: {
-        pivotHingeType: "65f29fce47357207b5f19d12",
-        count: 2,
-      },
-      heavyDutyOption: {
-        heavyDutyType: "65f29fce47357207b5f19d3a",
-        threshold: 85,
-        height: 84,
-      },
-      heavyPivotOption: { heavyPivotType: null, threshold: 0, height: 0 },
-      wallClamp: { wallClampType: "66d984aaa82554091c411279", count: 5 },
-      sleeveOver: { sleeveOverType: null, count: 0 },
-      glassToGlass: { glassToGlassType: null, count: 0 },
-      cornerWallClamp: { wallClampType: null, count: 0 },
-      cornerSleeveOver: {
-        sleeveOverType: "65f29fce47357207b5f19d62",
-        count: 0,
-      },
-      cornerGlassToGlass: {
-        glassToGlassType: "65f29fce47357207b5f19d62",
-        count: 0,
-      },
-      glassType: { type: "65f29fce47357207b5f19dee", thickness: "3/8" },
-      slidingDoorSystem: { type: null, count: 0 },
-      other: { people: 2, hours: 3 },
-      hardwareFinishes: "65f29fce47357207b5f19cd7",
-      channelOrClamps: "Clamps",
-      mountingChannel: null,
-      outages: 3,
-      glassAddon: "65f29fce47357207b5f19df4",
-      measurementSides: 3,
-      variant: "doorpanelandreturn",
-      notch: 0,
-      transom: null,
-      header: null,
-    },
-  },
-  {
-    _id: "65f29fcf47357207b5f19f78",
-    name: "Double Door",
-    image: "images/layouts/layout_3.png",
-    company_id: "65f29fce47357207b5f19cd1",
-    createdAt: "2024-03-14T06:57:19.055Z",
-    updatedAt: "2024-09-01T14:49:38.672Z",
-    __v: 0,
-    settings: {
-      handles: { handleType: "65f29fce47357207b5f19cea", count: 2 },
-      hinges: { hingesType: "65f29fce47357207b5f19d2a", count: 2 },
-      pivotHingeOption: {
-        pivotHingeType: "65f29fce47357207b5f19d12",
-        count: 2,
-      },
-      heavyDutyOption: {
-        heavyDutyType: "65f29fce47357207b5f19d3a",
-        threshold: 85,
-        height: 85,
-      },
-      heavyPivotOption: { heavyPivotType: null, threshold: 0, height: 0 },
-      wallClamp: { wallClampType: null, count: 0 },
-      sleeveOver: { sleeveOverType: null, count: 0 },
-      glassToGlass: { glassToGlassType: null, count: 0 },
-      cornerWallClamp: { wallClampType: null, count: 0 },
-      cornerSleeveOver: { sleeveOverType: null, count: 0 },
-      cornerGlassToGlass: { glassToGlassType: null, count: 0 },
-      glassType: { type: "65f29fce47357207b5f19dee", thickness: "3/8" },
-      slidingDoorSystem: { type: null, count: 0 },
-      other: { people: 2, hours: 2 },
-      hardwareFinishes: "65f29fce47357207b5f19cd3",
-      outages: 2,
-      measurementSides: 2,
-      variant: "doubledoor",
-      channelOrClamps: "Channel",
-      mountingChannel: null,
-      notch: 0,
-      transom: null,
-      header: null,
-      glassAddon: null,
-    },
-  },
-  {
-    _id: "65f29fcf47357207b5f19f54",
-    name: "Door",
-    image: "images/layouts/layout_1.png",
-    company_id: "65f29fce47357207b5f19cd1",
-    createdAt: "2024-03-14T06:57:19.041Z",
-    updatedAt: "2024-09-01T14:29:08.337Z",
-    __v: 0,
-    settings: {
-      handles: { handleType: "65f29fce47357207b5f19d02", count: 1 },
-      hinges: { hingesType: "65f29fce47357207b5f19d3a", count: 2 },
-      pivotHingeOption: {
-        pivotHingeType: "65f29fce47357207b5f19d32",
-        count: 2,
-      },
-      heavyDutyOption: {
-        heavyDutyType: "65f29fce47357207b5f19d3a",
-        threshold: 85,
-        height: 85,
-      },
-      heavyPivotOption: { heavyPivotType: null, threshold: 0, height: 0 },
-      wallClamp: { wallClampType: null, count: 0 },
-      sleeveOver: { sleeveOverType: null, count: 0 },
-      glassToGlass: { glassToGlassType: null, count: 0 },
-      cornerWallClamp: { wallClampType: null, count: 0 },
-      cornerSleeveOver: { sleeveOverType: null, count: 0 },
-      cornerGlassToGlass: { glassToGlassType: null, count: 0 },
-      glassType: { type: "65f29fce47357207b5f19dee", thickness: "3/8" },
-      slidingDoorSystem: { type: null, count: 0 },
-      other: { people: 2, hours: 2 },
-      hardwareFinishes: "65f29fce47357207b5f19cd9",
-      outages: 2,
-      transom: null,
-      measurementSides: 2,
-      variant: "door",
-      channelOrClamps: "Channel",
-      mountingChannel: null,
-      notch: 0,
-      header: null,
-      glassAddon: null,
-    },
-  },
-  {
-    _id: "65f29fcf47357207b5f19f4b",
-    name: "Door & Panel",
-    image: "images/layouts/layout_2.png",
-    company_id: "65f29fce47357207b5f19cd1",
-    createdAt: "2024-03-14T06:57:19.037Z",
-    updatedAt: "2024-09-01T14:47:30.615Z",
-    __v: 0,
-    settings: {
-      handles: { handleType: "65f29fce47357207b5f19ce2", count: 1 },
-      hinges: { hingesType: "65f29fce47357207b5f19d42", count: 2 },
-      pivotHingeOption: {
-        pivotHingeType: "65f29fce47357207b5f19d12",
-        count: 2,
-      },
-      heavyDutyOption: {
-        heavyDutyType: "65f29fce47357207b5f19d3a",
-        threshold: 85,
-        height: 85,
-      },
-      heavyPivotOption: { heavyPivotType: null, threshold: 0, height: 0 },
-      wallClamp: { wallClampType: null, count: 0 },
-      sleeveOver: { sleeveOverType: null, count: 0 },
-      glassToGlass: { glassToGlassType: null, count: 0 },
-      cornerWallClamp: { wallClampType: null, count: 0 },
-      cornerSleeveOver: { sleeveOverType: null, count: 0 },
-      cornerGlassToGlass: { glassToGlassType: null, count: 0 },
-      glassType: { type: "65f29fce47357207b5f19dee", thickness: "3/8" },
-      slidingDoorSystem: { type: null, count: 0 },
-      other: { people: 2, hours: 2 },
-      hardwareFinishes: "65f29fce47357207b5f19cd9",
-      channelOrClamps: "Channel",
-      mountingChannel: "65f29fce47357207b5f19d52",
-      outages: 2,
-      measurementSides: 2,
-      variant: "doorandpanel",
-      notch: 0,
-      transom: null,
-      header: null,
-      glassAddon: null,
-    },
-  },
-];
+import {
+  getEstimateCategory,
+  getEstimateLayout,
+  getLocation,
+  setEstimateLayout,
+  setSelectedFinishes,
+  setSelectedGlassType,
+  setSelectedHardware,
+} from "../redux/globalEstimateForm";
+import { useFetchAllDocuments } from "../utilities/apiHooks";
 
 const boxStyles = {
   minHeight: "182px",
@@ -214,20 +46,40 @@ const boxStyles = {
 const SelectLayoutSection = ({ next, back }) => {
   const dispatch = useDispatch();
   const getSelectedLayout = useSelector(getEstimateLayout);
+  const Location = useSelector(getLocation);
+  const SelectedCategory = useSelector(getEstimateCategory);
   const [selectCustom, setSelectCustom] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedData, setSelectedData] = useState(getSelectedLayout?._id ?? "");
+  const [selectedData, setSelectedData] = useState(
+    getSelectedLayout?._id ?? ""
+  );
+  const {
+    data: locationData,
+    refetch,
+    isFetching,
+  } = useFetchAllDocuments(
+    `${backendURL}/location-data/${Location?.id}?category=${SelectedCategory}`
+  );
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const filteredData = useMemo(() => {
-    const data = [...layouts, { _id: "custom", name: "Custom" }];
+    const layouts = Array.isArray(locationData?.layouts)
+      ? locationData.layouts
+      : [];
+    const customLayout =
+      EstimateCategory.WINECELLARS !== SelectedCategory
+        ? { _id: "custom", name: "Custom" }
+        : {};
+    const data = [...layouts, customLayout];
     return data.filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item?.name?.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search, locationData]);
 
   const handleBoxClick = (layout) => {
     dispatch(setEstimateLayout(layout));
-    console.log(layout);
     if (layout._id === "custom") {
       setSelectCustom(true);
       setSelectedData("custom");
@@ -235,6 +87,12 @@ const SelectLayoutSection = ({ next, back }) => {
       setSelectCustom(false);
       setSelectedData(layout._id);
     }
+  };
+  const handleNext = () => {
+    dispatch(setSelectedHardware(locationData?.hardwares));
+    dispatch(setSelectedGlassType(locationData?.glassTypes));
+    dispatch(setSelectedFinishes(locationData?.finishes));
+    next();
   };
 
   return (
@@ -318,7 +176,7 @@ const SelectLayoutSection = ({ next, back }) => {
             </Box>
           </Box>
           <Box sx={{ p: 2, background: "#F6F5FF" }}>
-            {false ? (
+            {isFetching ? (
               <Box
                 sx={{
                   width: 40,
@@ -465,7 +323,7 @@ const SelectLayoutSection = ({ next, back }) => {
                 fontSize: "16px",
               }}
               variant="contained"
-              onClick={next}
+              onClick={handleNext}
               disabled={!selectedData}
             >
               Next <KeyboardArrowRight />

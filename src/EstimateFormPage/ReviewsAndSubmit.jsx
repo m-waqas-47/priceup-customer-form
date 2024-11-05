@@ -4,23 +4,20 @@ import {
   AccordionSummary,
   Box,
   Button,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
   Stack,
   TextareaAutosize,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomInputField from "../ui-components/CustomInput";
-import {  ExpandMore, KeyboardArrowRight } from "@mui/icons-material";
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { ExpandMore, KeyboardArrowRight } from "@mui/icons-material";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteCollectionItem,
+  getEstimateLayout,
   getEstimates,
   getLocation,
   getProjectDetails,
@@ -33,10 +30,11 @@ import {
   setReviewDetail,
 } from "../redux/globalEstimateForm";
 import { useNavigate } from "react-router-dom";
+import { useCreateDocument } from "../utilities/apiHooks";
+import { backendURL } from "../utilities/common";
 
 const validationSchema = yup.object({
   name: yup.string().required("Project name is required"),
-  // location: yup.string().required("Location is required"),
   notes: yup.string(),
   customerDetail: yup.object({
     firstName: yup.string().required("First name is required"),
@@ -52,16 +50,22 @@ const ReviewsAndSubmit = ({ next, back }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const ProjectDetail = useSelector(getProjectDetails);
+  const selectedLayout = useSelector(getEstimateLayout);
   const totalQuotes = useSelector(getEstimates);
   const Location = useSelector(getLocation);
   const [expandAccordion, setExpandAccordion] = useState(
     Array(totalQuotes.length).fill(false)
   );
 
+  const {
+    mutate: createEstimate,
+    isLoading: createEstimateLoading,
+    isSuccess: createEstimateSuccess,
+  } = useCreateDocument();
+
   const formik = useFormik({
     initialValues: {
       name: ProjectDetail?.name ?? "",
-      location: ProjectDetail?.location ?? "",
       customerDetail: {
         firstName: ProjectDetail?.customerDetail?.firstName ?? "",
         lastName: ProjectDetail?.customerDetail?.lastName ?? "",
@@ -73,15 +77,15 @@ const ReviewsAndSubmit = ({ next, back }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       dispatch(setProjectDetails(values));
-      navigate("/submit-successful");
+      const data = {
+        location: Location,
+        ProjectDetail: values,
+        quotes: totalQuotes,
+      };
+      createEstimate({ data, apiRoute: `${backendURL}/form-request` });
     },
   });
-  // const handleChange = (e) => {
-  //   formik.handleChange(e); // Update formik state
-  //   dispatch(setReviewDetail(formik.values)); // Dispatch updated form values
-  // };
   const handleAnother = () => {
     back(0);
     dispatch(setEstimateDetail({}));
@@ -91,8 +95,12 @@ const ReviewsAndSubmit = ({ next, back }) => {
 
   const handleDelete = (id) => {
     dispatch(deleteCollectionItem(id));
-    console.log(totalQuotes, id);
   };
+  useEffect(() => {
+    if (createEstimateSuccess) {
+      navigate("/submit-successful");
+    }
+  }, [createEstimateSuccess]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -123,7 +131,6 @@ const ReviewsAndSubmit = ({ next, back }) => {
             </Typography>
           </Box>
         </Stack>
-
         <Box
           sx={{
             display: "flex",
@@ -175,9 +182,9 @@ const ReviewsAndSubmit = ({ next, back }) => {
                           flexDirection: "column",
                         }}
                       >
-                        <Box mb={0.6}>
-                          <label htmlFor="name" className="label-text">
-                            Project Name
+                        <Box mb={0.6} >
+                          <label htmlFor="name" className="label-text" style={{display:'flex'}}>
+                            Project Name <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> 
                           </label>
                         </Box>
                         <CustomInputField
@@ -222,55 +229,8 @@ const ReviewsAndSubmit = ({ next, back }) => {
                         </label>
                       </Box>
                       <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                       {Location}
-                        {/* : {ProjectDetail.location ?? ""} */}
+                        {Location?.name}
                       </Typography>
-                      {/* <FormControl
-                        sx={{ width: "100%" }}
-                        size="small"
-                        className="custom-textfield"
-                      >
-                        <Select
-                          name="location"
-                          value={formik.values.location}
-                          size="small"
-                          labelId="demo-select-small-label"
-                          id="demo-select-small"
-                          className="hardwareSelect"
-                          sx={{
-                            height: "40px",
-                            background: "#F6F5FF",
-                            ".MuiOutlinedInput-input": {
-                              p: "10px !important",
-                            },
-                          }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          error={
-                            formik.touched.location &&
-                            Boolean(formik.errors.location)
-                          }
-                          displayEmpty
-                          placeholder="Select Location"
-                        >
-                          <MenuItem value="">
-                            <em>Select Location</em>
-                          </MenuItem>
-                          <MenuItem value="Test Name">Test Name</MenuItem>
-                          <MenuItem value="Test Name 1">Test Name 1</MenuItem>
-                        </Select>
-                      </FormControl>
-                      {formik.touched.location && formik.errors.location && (
-                        <Typography
-                          sx={{
-                            color: "red",
-                            fontSize: "12px",
-                            mt: "4px",
-                          }}
-                        >
-                          {formik.errors.location}
-                        </Typography>
-                      )} */}
                     </Box>
                   </Box>
                 </Box>
@@ -314,22 +274,10 @@ const ReviewsAndSubmit = ({ next, back }) => {
                   </Box>
                 </Box>
               </Box>
-              {/* <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                Project Name: {ProjectDetail.name ?? ""}
-              </Typography>
-              <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                Location : {ProjectDetail.location ?? ""}
-              </Typography>
-              <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                Customer Name : {ProjectDetail.customerDetail?.firstName ?? ""}
-              </Typography>
-              <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                Customer Email : {ProjectDetail.customerDetail?.email ?? ""}
-              </Typography> */}
               <Box>
                 {totalQuotes.map((data, index) => (
                   <Accordion
-                    key={index} 
+                    key={index}
                     expanded={expandAccordion[index]}
                     onChange={() => {
                       setExpandAccordion((prev) => {
@@ -376,7 +324,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
                           color: "#E22A2D",
                           cursor: "pointer",
                           marginLeft: "auto",
-                        }} // Style the delete icon
+                        }}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDelete(data?.id);
@@ -392,32 +340,74 @@ const ReviewsAndSubmit = ({ next, back }) => {
                         Layout = {data?.layout?.name}
                       </Typography>
                       <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        Glass Type = {data?.estimateDetail?.glass}
+                        Glass Type = {data?.estimateDetail?.glass?.name}
                       </Typography>
                       <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        Hardware Finish = {data?.estimateDetail?.hardware}
+                        Hardware Finish = {data?.estimateDetail?.hardware?.name}
                       </Typography>
-                      <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        Hinge Type = {data?.estimateDetail?.hingeType}
-                      </Typography>
-                      <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        Handle Type = {data?.estimateDetail?.handleType}
-                      </Typography>
+                      {data?.estimateDetail?.hingeType?.name && (
+                        <Typography variant="h6" sx={{ fontSize: "18px" }}>
+                          Hinge Type = {data?.estimateDetail?.hingeType?.name}
+                        </Typography>
+                      )}
+                      {data?.estimateDetail?.handleType?.name && (
+                        <Typography variant="h6" sx={{ fontSize: "18px" }}>
+                          Handle Type = {data?.estimateDetail?.handleType?.name}
+                        </Typography>
+                      )}
+
                       {data?.estimateDetail?.lock && (
                         <Typography variant="h6" sx={{ fontSize: "18px" }}>
                           Lock = {data?.estimateDetail?.lock}
                         </Typography>
                       )}
-                      {data?.estimateDetail?.a &&  <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        a = {data?.estimateDetail?.a}
-                      </Typography>}
-                      {data?.estimateDetail?.b &&  <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        b = {data?.estimateDetail?.b}
-                      </Typography>}
-                      {data?.estimateDetail?.c &&  <Typography variant="h6" sx={{ fontSize: "18px" }}>
-                        c = {data?.estimateDetail?.c}
-                      </Typography>}
-                     
+                      {data?.estimateDetail?.dimensions &&
+                      selectedLayout?._id === "custom"
+                        ? data?.estimateDetail?.dimensions.map((dim, index) => (
+                            <Box key={index} sx={{ mb: 2 }}>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontSize: "18px" }}
+                              >
+                                {`Count: ${dim.quantity}`}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontSize: "18px" }}
+                              >
+                                {`Width: ${dim.width}`}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontSize: "18px" }}
+                              >
+                                {`Height: ${dim.height}`}
+                              </Typography>
+                            </Box>
+                          ))
+                        : data?.estimateDetail?.dimensions.map(
+                            (data, index) => (
+                              <Typography
+                                variant="h6"
+                                sx={{ fontSize: "18px" }}
+                                key={index}
+                              >
+                                {data.key} = {data.value}
+                              </Typography>
+                            )
+                          )}
+                      {/* {data?.estimateDetail?.dimensions &&
+                        Object.entries(data.estimateDetail.dimensions).map(
+                          ([key, value]) => (
+                            <Typography
+                              variant="h6"
+                              sx={{ fontSize: "18px" }}
+                              key={key}
+                            >
+                              {key} = {value}
+                            </Typography>
+                          )
+                        )} */}
                     </AccordionDetails>
                   </Accordion>
                 ))}
@@ -446,8 +436,8 @@ const ReviewsAndSubmit = ({ next, back }) => {
                       }}
                     >
                       <Box sx={{ display: { sm: "block", xs: "none" } }}>
-                        <label htmlFor="customerDetail.firstName">
-                          First Name
+                        <label htmlFor="customerDetail.firstName" style={{display:'flex'}}>
+                          First Name <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> 
                         </label>
                       </Box>
                       <CustomInputField
@@ -490,8 +480,8 @@ const ReviewsAndSubmit = ({ next, back }) => {
                       }}
                     >
                       <Box sx={{ display: { sm: "block", xs: "none" } }}>
-                        <label htmlFor="customerDetail.lastName">
-                          Last Name
+                        <label htmlFor="customerDetail.lastName" style={{display:'flex'}}>
+                          Last Name <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> 
                         </label>
                       </Box>
                       <CustomInputField
@@ -678,8 +668,8 @@ const ReviewsAndSubmit = ({ next, back }) => {
             variant="contained"
             onClick={handleAnother}
           >
-            <KeyboardArrowRight sx={{ transform: "rotate(180deg)" }} />Create Another
-            Quote
+            <KeyboardArrowRight sx={{ transform: "rotate(180deg)" }} />
+            Create Another Quote
           </Button>
           <Button
             sx={{

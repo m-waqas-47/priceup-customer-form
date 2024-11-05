@@ -27,9 +27,6 @@ const validationSchema = yup.object({
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last name is required"),
     email: yup.string().email("Enter a valid email"),
-    // .required("Email is required"),
-    // phone: yup.string().required("Phone number is required"),
-    // address: yup.string().required("Address is required"),
   }),
 });
 
@@ -51,7 +48,6 @@ const CreateProjectSection = ({ next, back }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       dispatch(setProjectDetails(values));
       next(values);
     },
@@ -102,7 +98,6 @@ const CreateProjectSection = ({ next, back }) => {
                   width: "100%",
                 }}
               >
-                {/** Project Detail Block */}
                 <Box sx={{ width: "100%" }}>
                   <Box
                     sx={{
@@ -177,7 +172,6 @@ const CreateProjectSection = ({ next, back }) => {
                           width: { sm: "50%", xs: "100%" },
                         }}
                       >
-                        {/** Address Select Block */}
                         <Box mb={0.6}>
                           <label htmlFor="location" className="label-text">
                             Location
@@ -290,7 +284,6 @@ const CreateProjectSection = ({ next, back }) => {
                   width: "100%",
                 }}
               >
-                {/** Project Detail Block */}
                 <Box sx={{ width: "100%" }}>
                   <Box sx={{ display: "flex", gap: 2 }}>
                     <Box

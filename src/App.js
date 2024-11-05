@@ -1,18 +1,21 @@
-import logo from "./logo.svg";
 import "./App.css";
 import EstimateFormPage from "./EstimateFormPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SubmitMessage from "./EstimateFormPage/SubmitMessage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/" element={<EstimateFormPage />} />
-          <Route path="/submit-successful" element={<SubmitMessage />} />
-        </Routes>
-      </Router>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<EstimateFormPage />} />
+            <Route path="/submit-successful" element={<SubmitMessage />} />
+          </Routes>
+        </Router>
+      </QueryClientProvider>
     </div>
   );
 }

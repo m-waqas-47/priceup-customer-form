@@ -9,16 +9,35 @@ import {
 } from "@mui/material";
 import { getLocation, setLocation } from "../redux/globalEstimateForm";
 import { useDispatch, useSelector } from "react-redux";
-import logo from '../Assets/Location-Icon.png'
+import logo from "../Assets/Location-Icon.png";
+import { useFetchAllDocuments } from "../utilities/apiHooks";
+import { backendURL } from "../utilities/common";
+import { useEffect } from "react";
 
 function LocationModel({}) {
   const Location = useSelector(getLocation);
   const isMobile = useMediaQuery("(max-width:600px)");
   const dispatch = useDispatch();
+  const { data, refetch, isFetching } = useFetchAllDocuments(
+    `${backendURL}/locations`
+  );
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const handleLocationChange = (event) => {
-    dispatch(setLocation(event.target.value));
+    const selectedName = event.target.value;
+    const selectedLocation = data.find((loc) => loc.name === selectedName);
+  
+    if (selectedLocation) {
+      dispatch(setLocation({
+        id: selectedLocation._id,
+        name: selectedLocation.name,
+      }));
+    }
   };
+  
   const style = {
     position: "absolute",
     display: "flex",
@@ -37,8 +56,7 @@ function LocationModel({}) {
     <>
       <Modal
         disableAutoFocus
-        open={Location === "" ? true : false}
-        // onClose={close}
+        open={Location?.name === "" && Location?.id === ""  ? true : false}
         sx={{
           backgroundColor: "rgba(5, 0, 35, 0.1)",
           ".MuiModal-backdrop": {
@@ -59,18 +77,6 @@ function LocationModel({}) {
               >
                 Select Location
               </Typography>
-              {/* <Typography
-                sx={{
-                  color: "#212528",
-                  lineHeight: "21.86px",
-                  fontWeight: 600,
-                  // mt:'5px',
-                  fontSize: 16,
-                  opacity: "70%",
-                }}
-              >
-                Select Your Location.
-              </Typography> */}
             </Box>
           </Box>
           <Box
@@ -86,16 +92,16 @@ function LocationModel({}) {
               borderRadius: "12px",
             }}
           >
-             <Box>
-              <img src={logo} alt="delete icon" style={{height:'30px'}} />
+            <Box>
+              <img src={logo} alt="delete icon" style={{ height: "30px" }} />
             </Box>
             <Typography
               sx={{
                 color: "#212528",
-                lineHeight: '21.86px',
+                lineHeight: "21.86px",
                 fontWeight: 600,
                 fontSize: 16,
-                opacity:'70%'
+                opacity: "70%",
               }}
             >
               Select Yours Location.
@@ -107,7 +113,7 @@ function LocationModel({}) {
             >
               <Select
                 name="location"
-                value={Location}
+                value={Location.name}
                 size="small"
                 labelId="demo-select-small-label"
                 id="demo-select-small"
@@ -126,8 +132,12 @@ function LocationModel({}) {
                 <MenuItem value="">
                   <em>Select Location</em>
                 </MenuItem>
-                <MenuItem value="Test Name">GCS Denver</MenuItem>
-                <MenuItem value="Test Name 1">GCS Austin</MenuItem>
+                {!isFetching &&
+                  data.map((dataItem, index) => (
+                    <MenuItem key={index} value={dataItem.name}>
+                      {dataItem.name}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Box>
