@@ -13,7 +13,7 @@ const Header = () => {
         display: "flex",
       }}
     >
-      <Box className="gcs-logo" >
+      <Box className="gcs-logo"  component="a"  href='https://gcsglassandmirror.com/'>
         <img src={GCSLogo} alt="logo nav bar" style={{ height: "100px" }} />
       </Box>
       <Container  sx={{ display: "flex" , justifyContent: "space-between",}} >
