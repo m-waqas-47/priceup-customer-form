@@ -70,7 +70,7 @@ const SelectLayoutSection = ({ next, back }) => {
       : [];
     const customLayout =
       EstimateCategory.WINECELLARS !== SelectedCategory
-        ? { _id: "custom", name: "Custom" }
+        ? { _id: "custom", name: "Custom",variant:'custom' }
         : {};
     const data = [...layouts, customLayout];
     return data.filter((item) =>
