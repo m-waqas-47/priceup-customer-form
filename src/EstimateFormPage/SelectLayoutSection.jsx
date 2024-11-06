@@ -48,7 +48,7 @@ const SelectLayoutSection = ({ next, back }) => {
   const getSelectedLayout = useSelector(getEstimateLayout);
   const Location = useSelector(getLocation);
   const SelectedCategory = useSelector(getEstimateCategory);
-  const [selectCustom, setSelectCustom] = useState(false);
+  const [selectCustom, setSelectCustom] = useState(getSelectedLayout?._id === 'custom' ? true : false);
   const [search, setSearch] = useState("");
   const [selectedData, setSelectedData] = useState(
     getSelectedLayout?._id ?? ""
@@ -58,7 +58,7 @@ const SelectLayoutSection = ({ next, back }) => {
     refetch,
     isFetching,
   } = useFetchAllDocuments(
-    `${backendURL}/location-data/${Location?.id}?category=${SelectedCategory}`
+    `${backendURL}/location-data/${Location?._id}?category=${SelectedCategory}`
   );
   useEffect(() => {
     refetch();

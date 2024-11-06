@@ -15,7 +15,7 @@ export const getSelectedFinishes = (state) => state.globalEstimateForm.finishes;
 
 const initialState = {
   location: {
-    id: "",
+    _id: "",
     name: "",
   },
   projectDetails: {},

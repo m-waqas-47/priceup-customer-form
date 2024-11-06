@@ -32,7 +32,7 @@ function LocationModel({}) {
   
     if (selectedLocation) {
       dispatch(setLocation({
-        id: selectedLocation._id,
+        _id: selectedLocation._id,
         name: selectedLocation.name,
       }));
     }
@@ -56,7 +56,7 @@ function LocationModel({}) {
     <>
       <Modal
         disableAutoFocus
-        open={Location?.name === "" && Location?.id === ""  ? true : false}
+        open={Location?.name === "" && Location?._id === ""  ? true : false}
         sx={{
           backgroundColor: "rgba(5, 0, 35, 0.1)",
           ".MuiModal-backdrop": {

@@ -74,12 +74,19 @@ const ReviewsAndSubmit = ({ next, back }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      const { customerDetail, ...newValues } = values;
+      const { firstName, lastName, ...otherDetails } = values.customerDetail;
+      const customerDetails = {
+        name: `${firstName} ${lastName}`,
+        ...otherDetails,       
+      };
       dispatch(setProjectDetails(values));
       const data = {
         location: Location,
-        projectDetail: values,
+        projectDetail: newValues,
+        customerDetail:customerDetails,
         quotes: totalQuotes,
-      };
+      };   
       createEstimate({ data, apiRoute: `${backendURL}/form-request` });
     },
   });
