@@ -69,7 +69,7 @@ const SelectLayoutSection = ({ next, back }) => {
       ? locationData.layouts
       : [];
     const customLayout =
-      EstimateCategory.WINECELLARS !== SelectedCategory
+      EstimateCategory.MIRRORS === SelectedCategory
         ? { _id: "custom", name: "Custom",variant:'custom' }
         : {};
     const data = [...layouts, customLayout];

@@ -34,6 +34,7 @@ export const useCreateDocument = () => {
         // );
         return response.data.data;
       } else {
+        alert('An error occurred while creating record!')
         // dispatch(
         //   showSnackbar({
         //     message: "An error occurred while creating record",
@@ -43,6 +44,7 @@ export const useCreateDocument = () => {
         throw new Error("An error occurred while creating record.");
       }
     } catch (error) {
+      alert(`${error.response?.data?.message}`);
       // dispatch(
       //   showSnackbar({
       //     message: `${error.response?.data?.message}`,
