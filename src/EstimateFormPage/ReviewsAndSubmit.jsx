@@ -4,6 +4,8 @@ import {
   AccordionSummary,
   Box,
   Button,
+  CircularProgress,
+  Snackbar,
   Stack,
   TextareaAutosize,
   Typography,
@@ -50,6 +52,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
   const selectedLayout = useSelector(getEstimateLayout);
   const totalQuotes = useSelector(getEstimates);
   const Location = useSelector(getLocation);
+  const [openSnack, setOpenSnack] = React.useState(false);
   const [expandAccordion, setExpandAccordion] = useState(
     Array(totalQuotes.length).fill(false)
   );
@@ -57,7 +60,9 @@ const ReviewsAndSubmit = ({ next, back }) => {
   const {
     mutate: createEstimate,
     isLoading: createEstimateLoading,
-    isSuccess: createEstimateSuccess,
+    isSuccess,
+    isError,
+    error,
   } = useCreateDocument();
 
   const formik = useFormik({
@@ -78,16 +83,21 @@ const ReviewsAndSubmit = ({ next, back }) => {
       const { firstName, lastName, ...otherDetails } = values.customerDetail;
       const customerDetails = {
         name: `${firstName} ${lastName}`,
-        ...otherDetails,       
+        ...otherDetails,
       };
       dispatch(setProjectDetails(values));
       const data = {
         location: Location,
         projectDetail: newValues,
-        customerDetail:customerDetails,
+        customerDetail: customerDetails,
         quotes: totalQuotes,
-      };   
-      createEstimate({ data, apiRoute: `${backendURL}/form-request` });
+      };
+      createEstimate(
+        { data, apiRoute: `${backendURL}/form-request` },
+        {
+          onSettled: () => setOpenSnack(true), // Open Snackbar after request completes
+        }
+      );
     },
   });
   const handleAnother = () => {
@@ -101,10 +111,10 @@ const ReviewsAndSubmit = ({ next, back }) => {
     dispatch(deleteCollectionItem(id));
   };
   useEffect(() => {
-    if (createEstimateSuccess) {
+    if (isSuccess) {
       navigate("/submit-successful");
     }
-  }, [createEstimateSuccess]);
+  }, [isSuccess]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -695,6 +705,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
             Create Another Quote
           </Button>
           <Button
+            disabled={createEstimateLoading}
             sx={{
               backgroundColor: "#8477DA",
               "&:hover": {
@@ -707,8 +718,35 @@ const ReviewsAndSubmit = ({ next, back }) => {
             variant="contained"
             type="submit"
           >
-            Save
+            {createEstimateLoading ? (
+              <CircularProgress size={24} sx={{ color: "#8477DA" }} />
+            ) : (
+              "Save"
+            )}
           </Button>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={openSnack}
+            autoHideDuration={3000}
+            onClose={() => setOpenSnack(false)}
+            message={
+              isSuccess
+                ? "Document created successfully!"
+                : isError
+                ? error.message
+                : ""
+            }
+            ContentProps={{
+              sx: {
+                backgroundColor: isSuccess
+                  ? "green"
+                  : isError
+                  ? "#f75151"
+                  : "default",
+                color: "white", // Customize text color if needed
+              },
+            }}
+          />
         </Stack>
       </Box>
     </form>

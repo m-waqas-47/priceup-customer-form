@@ -29,28 +29,11 @@ export const useCreateDocument = () => {
       const response = await axios.post(props.apiRoute, props.data);
 
       if (response.data.code === 200) {
-        // dispatch(
-        //   showSnackbar({ message: "Created Successfuly", severity: "success" })
-        // );
         return response.data.data;
       } else {
-        alert('An error occurred while creating record!')
-        // dispatch(
-        //   showSnackbar({
-        //     message: "An error occurred while creating record",
-        //     severity: "error",
-        //   })
-        // );
         throw new Error("An error occurred while creating record.");
       }
     } catch (error) {
-      alert(`${error.response?.data?.message}`);
-      // dispatch(
-      //   showSnackbar({
-      //     message: `${error.response?.data?.message}`,
-      //     severity: "error",
-      //   })
-      // );
       throw new Error(`${error.response?.data?.message}`);
     }
   };
