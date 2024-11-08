@@ -43,7 +43,7 @@ const SubmitMessage = () => {
               <Typography variant="h3"> Thank you for Submission.</Typography>
               <Typography variant="h5">
                 {" "}
-                We well contact you shortly....
+             We have recived your request. We will contact you shortly...
               </Typography>
               <Box>
                 <Button

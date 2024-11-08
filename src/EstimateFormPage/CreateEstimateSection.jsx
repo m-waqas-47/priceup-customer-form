@@ -15,7 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getEstimateCategory,
   getEstimateDetail,
-  getEstimateLayout,  
+  getEstimateLayout,
+  getSelectedEdgeWork,
   getSelectedFinishes,
   getSelectedGlassTypes,
   getSelectedHardwares,
@@ -37,6 +38,7 @@ const CreateEstimateSection = ({ next, back }) => {
   const EstimateCategory = useSelector(getEstimateCategory);
   const getSelectedLayout = useSelector(getEstimateLayout);
   const EstimateDetails = useSelector(getEstimateDetail);
+  const SelectedEdgeWork = useSelector(getSelectedEdgeWork);
   const SelectedHardwares = useSelector(getSelectedHardwares);
   const SelectedGlassTypes = useSelector(getSelectedGlassTypes);
   const SelectedFinishes = useSelector(getSelectedFinishes);
@@ -83,6 +85,7 @@ const CreateEstimateSection = ({ next, back }) => {
             width: "",
             quantity: "",
           },
+          edgeWork: EstimateDetails?.edgeWork?._id ?? "",
         }
       : {
           dimensions: getSelectedLayout?.measurementSides
@@ -101,7 +104,12 @@ const CreateEstimateSection = ({ next, back }) => {
   const customFieldValidate =
     getSelectedLayout?._id === "custom" &&
     EstimateCategory === selectedCategory.MIRRORS
-      ? {}
+      ? {
+          edgeWork: Yup.object().shape({
+            _id: Yup.string().required("Please select a Edge Work"),
+            name: Yup.string().required("Please select a  Edge Work"),
+          }),
+        }
       : {
           hinge: Yup.object().shape({
             _id: Yup.string().required("Please select a hinge type"),
@@ -133,6 +141,9 @@ const CreateEstimateSection = ({ next, back }) => {
       hinge: EstimateDetails?.hinge?._id ?? "",
       handle: EstimateDetails?.handle?._id ?? "",
       lock: EstimateDetails?.lock ?? "",
+      simpleHoles: EstimateDetails?.simpleHoles ?? "",
+      lightHoles: EstimateDetails?.lightHoles ?? "",
+      singleOutletCutout: EstimateDetails?.singleOutletCutout ?? "",
       ...customInitialState,
     },
     validationSchema,
@@ -143,7 +154,10 @@ const CreateEstimateSection = ({ next, back }) => {
       );
       const updatedValues = {
         ...values,
-        dimensions: getSelectedLayout?._id === "custom" ? [values.dimensions] : formattedDimensions, 
+        dimensions:
+          getSelectedLayout?._id === "custom"
+            ? [values.dimensions]
+            : formattedDimensions,
       };
       dispatch(setEstimateDetail(updatedValues));
       next();
@@ -260,10 +274,14 @@ const CreateEstimateSection = ({ next, back }) => {
                           fontSize: 16,
                           fontWeight: 600,
                           color: { sm: "black", xs: "white" },
-                          display:'flex',                          
+                          display: "flex",
                         }}
                       >
-                        Width <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> :
+                        Width{" "}
+                        <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                          *
+                        </Box>{" "}
+                        :
                       </Typography>
 
                       <TextField
@@ -307,10 +325,14 @@ const CreateEstimateSection = ({ next, back }) => {
                           fontSize: 16,
                           fontWeight: 600,
                           color: { sm: "black", xs: "white" },
-                          display:'flex'
+                          display: "flex",
                         }}
                       >
-                        Height <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> :
+                        Height{" "}
+                        <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                          *
+                        </Box>{" "}
+                        :
                       </Typography>
 
                       <TextField
@@ -354,10 +376,14 @@ const CreateEstimateSection = ({ next, back }) => {
                           fontSize: 16,
                           fontWeight: 600,
                           color: { sm: "black", xs: "white" },
-                          display:'flex'
+                          display: "flex",
                         }}
                       >
-                        Quantity <Box color='red' fontSize='17px'sx={{px:0.3}} >*</Box> :
+                        Quantity{" "}
+                        <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                          *
+                        </Box>{" "}
+                        :
                       </Typography>
 
                       <TextField
@@ -424,11 +450,14 @@ const CreateEstimateSection = ({ next, back }) => {
                               fontSize: "16px",
                               fontWeight: 600,
                               lineHeight: "21.86px",
-                              display:'flex',
-                              gap:0.3
+                              display: "flex",
+                              gap: 0.3,
                             }}
                           >
-                            {String.fromCharCode(97 + index)} <Box color='red' fontSize='17px'>*</Box>
+                            {String.fromCharCode(97 + index)}{" "}
+                            <Box color="red" fontSize="17px">
+                              *
+                            </Box>
                           </Typography>
                           <Tooltip title={""}>
                             <InfoOutlined
@@ -502,6 +531,100 @@ const CreateEstimateSection = ({ next, back }) => {
             </Box>
             <hr style={{ marginTop: "40px" }} />
             {/* Glass Finish Options */}
+            {getSelectedLayout._id === "custom" &&
+            EstimateCategory === selectedCategory.MIRRORS ? (
+              <>
+                <Box sx={{ pt: 5 }}>
+                  <Typography
+                    sx={{
+                      color: "#212528",
+                      fontSize: { lg: 16, md: 14 },
+                      fontWeight: 600,
+                      lineHeight: "21.86px",
+                      opacity: "70%",
+                      display: "flex",
+                      gap: 0.3,
+                    }}
+                  >
+                    Mirror Edging{" "}
+                    <Box color="red" fontSize="17px">
+                      *
+                    </Box>
+                  </Typography>
+                  <Grid container sx={{ pt: 2, gap: 2 }}>
+                    {SelectedEdgeWork.map((data, index) => {
+                      const value = data?._id;
+                      return (
+                        <Box
+                          key={index}
+                          sx={{
+                            background:
+                              formik.values.edgeWork._id === value
+                                ? "#F3F5F6"
+                                : "",
+                            width: "175px",
+                            display: "flex",
+                            p: 1.5,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => formik.setFieldValue("edgeWork", data)}
+                        >
+                          <FormControlLabel
+                            value={value}
+                            control={
+                              <Radio
+                                checked={formik.values.edgeWork._id === value}
+                                onChange={() =>
+                                  formik.setFieldValue("edgeWork", data)
+                                }
+                                sx={{
+                                  color: "#8477DA",
+                                  "&.Mui-checked": {
+                                    color: "#8477DA",
+                                  },
+                                }}
+                              />
+                            }
+                          />
+                          <Box>
+                            <img
+                              src={`${backendURL}/${data?.image}`}
+                              alt={data?.name}
+                              height="120px"
+                            />
+                            <Typography
+                              sx={{
+                                color: "#212528",
+                                lineHeight: "21.86px",
+                                opacity: "70%",
+                                textAlign: "center",
+                              }}
+                            >
+                              {data?.name}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                  </Grid>
+                  {formik.touched.glass && formik.errors.glass && (
+                    <Typography
+                      sx={{
+                        color: "red",
+                        fontSize: "12px",
+                        mt: "4px",
+                      }}
+                    >
+                      {formik.errors.glass.name}
+                    </Typography>
+                  )}
+                </Box>
+                <hr style={{ mt: "40px" }} />
+              </>
+            ) : (
+              ""
+            )}
+            {/* Glass Finish Options */}
             <Box sx={{ pt: 5 }}>
               <Typography
                 sx={{
@@ -510,10 +633,14 @@ const CreateEstimateSection = ({ next, back }) => {
                   fontWeight: 600,
                   lineHeight: "21.86px",
                   opacity: "70%",
-                  display:'flex',gap:0.3
+                  display: "flex",
+                  gap: 0.3,
                 }}
               >
-                Glass Finish Options <Box color='red' fontSize='17px'>*</Box>
+                Glass Finish Options{" "}
+                <Box color="red" fontSize="17px">
+                  *
+                </Box>
               </Typography>
               <Grid container sx={{ pt: 2, gap: 2 }}>
                 {SelectedGlassTypes.map((data, index) => {
@@ -592,11 +719,14 @@ const CreateEstimateSection = ({ next, back }) => {
                       fontWeight: 600,
                       lineHeight: "21.86px",
                       opacity: "70%",
-                      display:'flex',
-                      gap:0.3
+                      display: "flex",
+                      gap: 0.3,
                     }}
                   >
-                    Hardware Finish Options <Box color='red' fontSize='17px'>*</Box>
+                    Hardware Finish Options{" "}
+                    <Box color="red" fontSize="17px">
+                      *
+                    </Box>
                   </Typography>
                   <Grid container sx={{ pt: 2, gap: 2 }}>
                     {SelectedHardwares.map((data, index) => {
@@ -678,10 +808,14 @@ const CreateEstimateSection = ({ next, back }) => {
                       fontWeight: 600,
                       lineHeight: "21.86px",
                       opacity: "70%",
-                      display:'flex',gap:0.3
+                      display: "flex",
+                      gap: 0.3,
                     }}
                   >
-                    Hardware Finish Options <Box color='red' fontSize='17px'>*</Box>
+                    Hardware Finish Options{" "}
+                    <Box color="red" fontSize="17px">
+                      *
+                    </Box>
                   </Typography>
                   <Grid container sx={{ pt: 2, gap: 2 }}>
                     {SelectedFinishes.map((data, index) => {
@@ -760,11 +894,14 @@ const CreateEstimateSection = ({ next, back }) => {
                       fontWeight: 600,
                       lineHeight: "21.86px",
                       opacity: "70%",
-                      display:'flex',
-                      gap:0.3
+                      display: "flex",
+                      gap: 0.3,
                     }}
                   >
-                    Handle Type <Box color='red' fontSize='17px'>*</Box>
+                    Handle Type{" "}
+                    <Box color="red" fontSize="17px">
+                      *
+                    </Box>
                   </Typography>
                   <Grid container sx={{ pt: 2, gap: 2 }}>
                     {SelectedHandles?.length > 0 &&
@@ -783,17 +920,13 @@ const CreateEstimateSection = ({ next, back }) => {
                               p: 1.5,
                               cursor: "pointer",
                             }}
-                            onClick={() =>
-                              formik.setFieldValue("handle", data)
-                            }
+                            onClick={() => formik.setFieldValue("handle", data)}
                           >
                             <FormControlLabel
                               value={value}
                               control={
                                 <Radio
-                                  checked={
-                                    formik.values.handle._id === value
-                                  }
+                                  checked={formik.values.handle._id === value}
                                   onChange={() =>
                                     formik.setFieldValue("handle", data)
                                   }
@@ -848,11 +981,14 @@ const CreateEstimateSection = ({ next, back }) => {
                       fontWeight: 600,
                       lineHeight: "21.86px",
                       opacity: "70%",
-                      display:'flex',
-                      gap:0.3
+                      display: "flex",
+                      gap: 0.3,
                     }}
                   >
-                    Hinge Type <Box color='red' fontSize='17px'>*</Box>
+                    Hinge Type{" "}
+                    <Box color="red" fontSize="17px">
+                      *
+                    </Box>
                   </Typography>
                   <Grid container sx={{ pt: 2, gap: 2 }}>
                     {SelectedHings?.length > 0 &&
@@ -871,17 +1007,13 @@ const CreateEstimateSection = ({ next, back }) => {
                               p: 1.5,
                               cursor: "pointer",
                             }}
-                            onClick={() =>
-                              formik.setFieldValue("hinge", data)
-                            }
+                            onClick={() => formik.setFieldValue("hinge", data)}
                           >
                             <FormControlLabel
                               value={value}
                               control={
                                 <Radio
-                                  checked={
-                                    formik.values.hinge._id === value
-                                  }
+                                  checked={formik.values.hinge._id === value}
                                   onChange={() =>
                                     formik.setFieldValue("hinge", data)
                                   }
@@ -1010,6 +1142,159 @@ const CreateEstimateSection = ({ next, back }) => {
                 </Box>
                 <hr style={{ mt: "40px" }} />
               </>
+            )}
+            {getSelectedLayout._id === "custom" &&
+            EstimateCategory === selectedCategory.MIRRORS ? (
+              <>
+                <Box sx={{ pt: 5 }}>
+                  <Typography
+                    sx={{
+                      fontSize: { lg: 24, md: 20 },
+                      fontWeight: 600,
+                      color: "#000000",
+                      display: "flex",
+                      lineHeight: "32.78px",
+                      gap: 1,
+                    }}
+                  >
+                    How Many Holes Need For Plugs, Holes, or Light Holes?
+                  </Typography>
+                  <Grid container spacing={2} sx={{ pt: 1 }}>
+                    <Grid item md={3} xs={6}>
+                      <Typography
+                        sx={{
+                          fontSize: 16,
+                          fontWeight: 600,
+                          color: { sm: "black", xs: "white" },
+                          display: "flex",
+                        }}
+                      >
+                        Holes :
+                      </Typography>
+
+                      <TextField
+                        type="number"
+                        size="small"
+                        variant="outlined"
+                        className="custom-textfield-purple"
+                        name="simpleHoles"
+                        placeholder="Holes"
+                        InputProps={{
+                          inputProps: { min: 0 },
+                        }}
+                        style={{
+                          display: "block",
+                          width: { md: "28%", xs: "20%" },
+                        }}
+                        value={formik.values.simpleHoles}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.simpleHoles &&
+                          Boolean(formik.errors.simpleHoles)
+                        }
+                      />
+                      {formik.touched.simpleHoles &&
+                        formik.errors.simpleHoles && (
+                          <Typography
+                            sx={{
+                              color: "red",
+                              fontSize: "12px",
+                              mt: "4px",
+                            }}
+                          >
+                            {formik.errors.simpleHoles}.
+                          </Typography>
+                        )}
+                    </Grid>
+                    <Grid item md={3} xs={6}>
+                      <Typography
+                        sx={{
+                          fontSize: 16,
+                          fontWeight: 600,
+                          color: { sm: "black", xs: "white" },
+                          display: "flex",
+                        }}
+                      >
+                        Light Holes :
+                      </Typography>
+
+                      <TextField
+                        type="number"
+                        size="small"
+                        variant="outlined"
+                        name="lightHoles"
+                        className="custom-textfield-purple"
+                        InputProps={{
+                          inputProps: { min: 0 },
+                        }}
+                        placeholder="Light Holes"
+                        style={{
+                          display: "block",
+                          width: { md: "28%", xs: "20%" },
+                        }}
+                        value={formik.values.lightHoles}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.lightHoles &&
+                          Boolean(formik.errors.lightHoles)
+                        }
+                      />
+                      {formik.touched.lightHoles &&
+                        formik.errors.lightHoles && (
+                          <Typography
+                            sx={{
+                              color: "red",
+                              fontSize: "12px",
+                              mt: "4px",
+                            }}
+                          >
+                            {formik.errors.lightHoles}.
+                          </Typography>
+                        )}
+                    </Grid>
+                    <Grid item md={3} xs={6}>
+                      <Typography
+                        sx={{
+                          fontSize: 16,
+                          fontWeight: 600,
+                          color: { sm: "black", xs: "white" },
+                          display: "flex",
+                        }}
+                      >
+                        Plugs :
+                      </Typography>
+
+                      <TextField
+                        type="number"
+                        size="small"
+                        variant="outlined"
+                        name="singleOutletCutout"
+                        className="custom-textfield-purple"
+                        InputProps={{
+                          inputProps: { min: 0 },
+                        }}
+                        placeholder="Quantity"
+                        style={{
+                          display: "block",
+                          width: { md: "28%", xs: "20%" },
+                        }}
+                        value={formik.values.singleOutletCutout}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.dimensions?.quantity &&
+                          Boolean(formik.errors.dimensions?.quantity)
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+                <hr style={{ mt: "40px" }} />
+              </>
+            ) : (
+              ""
             )}
           </Box>
         </Stack>

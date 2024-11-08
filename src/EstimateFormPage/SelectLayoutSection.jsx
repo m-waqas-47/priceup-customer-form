@@ -19,6 +19,7 @@ import {
   getEstimateLayout,
   getLocation,
   setEstimateLayout,
+  setSelectedEdgeWork,
   setSelectedFinishes,
   setSelectedGlassType,
   setSelectedHardware,
@@ -92,6 +93,7 @@ const SelectLayoutSection = ({ next, back }) => {
     dispatch(setSelectedHardware(locationData?.hardwares));
     dispatch(setSelectedGlassType(locationData?.glassTypes));
     dispatch(setSelectedFinishes(locationData?.finishes));
+    dispatch(setSelectedEdgeWork(locationData?.edgeWorks ?? []));    
     next();
   };
 
