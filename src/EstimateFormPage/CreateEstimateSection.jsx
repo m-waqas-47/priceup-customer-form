@@ -1275,7 +1275,7 @@ const CreateEstimateSection = ({ next, back }) => {
                         InputProps={{
                           inputProps: { min: 0 },
                         }}
-                        placeholder="Quantity"
+                        placeholder="Plugs"
                         style={{
                           display: "block",
                           width: { md: "28%", xs: "20%" },
@@ -1283,10 +1283,6 @@ const CreateEstimateSection = ({ next, back }) => {
                         value={formik.values.singleOutletCutout}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.dimensions?.quantity &&
-                          Boolean(formik.errors.dimensions?.quantity)
-                        }
                       />
                     </Grid>
                   </Grid>
