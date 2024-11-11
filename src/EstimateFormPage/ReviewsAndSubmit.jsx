@@ -390,7 +390,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
                                 variant="h6"
                                 sx={{ fontSize: "18px" }}
                               >
-                                {`Count: ${dim.quantity}`}
+                                {`Count: ${dim.count}`}
                               </Typography>
                               <Typography
                                 variant="h6"

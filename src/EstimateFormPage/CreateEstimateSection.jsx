@@ -56,7 +56,7 @@ const CreateEstimateSection = ({ next, back }) => {
           dimensions: Yup.object().shape({
             height: Yup.string().required("Height is required"),
             width: Yup.string().required("Width is required"),
-            quantity: Yup.string().required("Quantity is required"),
+            count: Yup.string().required("Quantity is required"),
           }),
         }
       : {
@@ -83,7 +83,7 @@ const CreateEstimateSection = ({ next, back }) => {
           dimensions: {
             height: "",
             width: "",
-            quantity: "",
+            count: "",
           },
           edgeWork: EstimateDetails?.edgeWork?._id ?? "",
         }
@@ -390,7 +390,7 @@ const CreateEstimateSection = ({ next, back }) => {
                         type="number"
                         size="small"
                         variant="outlined"
-                        name="dimensions.quantity"
+                        name="dimensions.count"
                         className="custom-textfield-purple"
                         InputProps={{
                           inputProps: { min: 0 },
@@ -400,16 +400,16 @@ const CreateEstimateSection = ({ next, back }) => {
                           display: "block",
                           width: { md: "28%", xs: "20%" },
                         }}
-                        value={formik.values.dimensions.quantity}
+                        value={formik.values.dimensions.count}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.dimensions?.quantity &&
-                          Boolean(formik.errors.dimensions?.quantity)
+                          formik.touched.dimensions?.count &&
+                          Boolean(formik.errors.dimensions?.count)
                         }
                       />
-                      {formik.touched.dimensions?.quantity &&
-                        formik.errors.dimensions?.quantity && (
+                      {formik.touched.dimensions?.count &&
+                        formik.errors.dimensions?.count && (
                           <Typography
                             sx={{
                               color: "red",
@@ -417,7 +417,7 @@ const CreateEstimateSection = ({ next, back }) => {
                               mt: "4px",
                             }}
                           >
-                            {formik.errors.dimensions?.quantity}.
+                            {formik.errors.dimensions?.count}.
                           </Typography>
                         )}
                     </Grid>
