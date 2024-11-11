@@ -30,7 +30,12 @@ import {
 } from "../redux/globalEstimateForm";
 import { useNavigate } from "react-router-dom";
 import { useCreateDocument } from "../utilities/apiHooks";
-import { backendURL } from "../utilities/common";
+import {
+  backendURL,
+  formatedString,
+  renderMeasurementSides,
+  renderMeasurementSidesForShower,
+} from "../utilities/common";
 
 const validationSchema = yup.object({
   name: yup.string().required("Project name is required"),
@@ -86,11 +91,17 @@ const ReviewsAndSubmit = ({ next, back }) => {
         ...otherDetails,
       };
       dispatch(setProjectDetails(values));
+      const estimatesString = formatedString(
+        totalQuotes,
+        customerDetails,
+        newValues
+      );
       const data = {
         location: Location,
         projectDetail: newValues,
         customerDetail: customerDetails,
         quotes: totalQuotes,
+        contactNote : estimatesString,
       };
       createEstimate(
         { data, apiRoute: `${backendURL}/form-request` },
@@ -115,7 +126,6 @@ const ReviewsAndSubmit = ({ next, back }) => {
       navigate("/submit-successful");
     }
   }, [isSuccess]);
-
   return (
     <form onSubmit={formik.handleSubmit}>
       <Box
@@ -382,41 +392,20 @@ const ReviewsAndSubmit = ({ next, back }) => {
                           Lock = {data?.estimateDetail?.lock}
                         </Typography>
                       )}
-                      {data?.estimateDetail?.dimensions &&
-                      selectedLayout?._id === "custom"
-                        ? data?.estimateDetail?.dimensions.map((dim, index) => (
-                            <Box key={index} sx={{ mb: 2 }}>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontSize: "18px" }}
-                              >
-                                {`Count: ${dim.count}`}
-                              </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontSize: "18px" }}
-                              >
-                                {`Width: ${dim.width}`}
-                              </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontSize: "18px" }}
-                              >
-                                {`Height: ${dim.height}`}
-                              </Typography>
-                            </Box>
-                          ))
-                        : data?.estimateDetail?.dimensions.map(
-                            (data, index) => (
-                              <Typography
-                                variant="h6"
-                                sx={{ fontSize: "18px" }}
-                                key={index}
-                              >
-                                {data.key} = {data.value}
-                              </Typography>
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
+                        <Typography>Dimensions :</Typography>
+                        {data?.estimateDetail?.dimensions &&
+                        data?.layout?._id === "custom"
+                          ? renderMeasurementSidesForShower(
+                              data?.estimateDetail?.dimensions
                             )
-                          )}
+                          : renderMeasurementSides(
+                              "create",
+                              data?.estimateDetail?.dimensions,
+                              selectedLayout?._id
+                            )}
+                      </Box>
+
                       {/* {data?.estimateDetail?.dimensions &&
                         Object.entries(data.estimateDetail.dimensions).map(
                           ([key, value]) => (
