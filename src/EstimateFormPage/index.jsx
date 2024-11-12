@@ -173,7 +173,7 @@ const EstimateFormPage = () => {
             </React.Fragment>
           )}
         </Stack>
-        <LocationModel />
+       
       </Container>
     </>
   );
