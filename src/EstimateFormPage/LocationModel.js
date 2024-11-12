@@ -14,7 +14,8 @@ import { useFetchAllDocuments } from "../utilities/apiHooks";
 import { backendURL } from "../utilities/common";
 import { useEffect } from "react";
 
-function LocationModel({}) {
+const LocationModel = ({ openModel, setOpenModel }) => {
+  const safeSetOpenModel = setOpenModel || (() => {});
   const Location = useSelector(getLocation);
   const isMobile = useMediaQuery("(max-width:600px)");
   const dispatch = useDispatch();
@@ -29,15 +30,28 @@ function LocationModel({}) {
   const handleLocationChange = (event) => {
     const selectedName = event.target.value;
     const selectedLocation = data.find((loc) => loc.name === selectedName);
-  
+
     if (selectedLocation) {
-      dispatch(setLocation({
-        _id: selectedLocation._id,
-        name: selectedLocation.name,
-      }));
+      dispatch(
+        setLocation({
+          _id: selectedLocation._id,
+          name: selectedLocation.name,
+        })
+      );
     }
   };
-  
+
+  useEffect(() => {
+    if (Location?.name !== "" && Location?._id !== "") {
+      safeSetOpenModel(false);
+    }
+  }, [Location]);
+  const handleClose = () => {
+    if (Location?.name !== "" && Location?._id !== "") {
+      safeSetOpenModel(false);
+    }
+  };
+
   const style = {
     position: "absolute",
     display: "flex",
@@ -56,7 +70,9 @@ function LocationModel({}) {
     <>
       <Modal
         disableAutoFocus
-        open={Location?.name === "" && Location?._id === ""  ? true : false}
+        open={openModel}
+        onClose={handleClose}
+        // open={Location?.name === "" && Location?._id === ""  ? true : false}
         sx={{
           backgroundColor: "rgba(5, 0, 35, 0.1)",
           ".MuiModal-backdrop": {

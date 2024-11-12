@@ -223,7 +223,7 @@ const CreateEstimateSection = ({ next, back }) => {
                   />
                 )}
               </Box>
-              <Typography
+              {/* <Typography
                 sx={{
                   fontSize: { lg: 24, md: 20 },
                   fontWeight: 600,
@@ -235,7 +235,7 @@ const CreateEstimateSection = ({ next, back }) => {
                 }}
               >
                 {getSelectedLayout?.name}
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
           <Box sx={{ width: "60%" }}>
@@ -251,8 +251,21 @@ const CreateEstimateSection = ({ next, back }) => {
             >
               Select Your Customizations
             </Typography>
+            <Typography
+                sx={{
+                  fontSize: { lg: 24, md: 20 },
+                  fontWeight: 600,
+                  color: "#000000",
+                  display: "flex",
+                  lineHeight: "32.78px",
+                  gap: 1,
+                  pt: 2.5,
+                }}
+              >
+               Layout : <Box component='span' sx={{color:'#212528 !important',opacity:'70%'}}>{getSelectedLayout?.name}</Box>
+              </Typography>
             {/* Dimensions Section */}
-            <Box sx={{ pt: 5 }}>
+            <Box sx={{ pt: 3 }}>
               <Typography
                 sx={{
                   fontSize: { lg: 24, md: 20 },
@@ -529,7 +542,7 @@ const CreateEstimateSection = ({ next, back }) => {
                 {}
               </Grid>
             </Box>
-            <hr style={{ marginTop: "40px" }} />
+            <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
             {/* Glass Finish Options */}
             {getSelectedLayout._id === "custom" &&
             EstimateCategory === selectedCategory.MIRRORS ? (
@@ -619,7 +632,7 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
               </>
             ) : (
               ""
@@ -637,7 +650,7 @@ const CreateEstimateSection = ({ next, back }) => {
                   gap: 0.3,
                 }}
               >
-                Glass Finish Options{" "}
+                Glass Type Options{" "}
                 <Box color="red" fontSize="17px">
                   *
                 </Box>
@@ -706,7 +719,7 @@ const CreateEstimateSection = ({ next, back }) => {
                 </Typography>
               )}
             </Box>
-            <hr style={{ mt: "40px" }} />
+            <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
 
             {getSelectedLayout?._id === "custom" &&
             EstimateCategory === selectedCategory.MIRRORS ? (
@@ -796,7 +809,7 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
               </>
             ) : (
               <>
@@ -885,7 +898,7 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
                 <Box sx={{ pt: 5 }}>
                   <Typography
                     sx={{
@@ -972,7 +985,7 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
                 <Box sx={{ pt: 5 }}>
                   <Typography
                     sx={{
@@ -1059,12 +1072,11 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
               </>
             )}
 
-            {getSelectedLayout?._id === "custom" &&
-            EstimateCategory === selectedCategory.MIRRORS ? (
+            {EstimateCategory !== selectedCategory.WINECELLARS  ? (
               ""
             ) : (
               <>
@@ -1140,13 +1152,13 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Box>
                   </>
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
               </>
             )}
             {getSelectedLayout._id === "custom" &&
             EstimateCategory === selectedCategory.MIRRORS ? (
               <>
-                <Box sx={{ pt: 5 }}>
+                <Box sx={{ pt: 5, }}>
                   <Typography
                     sx={{
                       fontSize: { lg: 24, md: 20 },
@@ -1287,7 +1299,7 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Grid>
                   </Grid>
                 </Box>
-                <hr style={{ mt: "40px" }} />
+                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
               </>
             ) : (
               ""
