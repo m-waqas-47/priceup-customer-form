@@ -7,7 +7,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { getLocation, setLocation } from "../redux/globalEstimateForm";
+import { getLocation, resetFormState, setLocation } from "../redux/globalEstimateForm";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../Assets/Location-Icon.png";
 import { useFetchAllDocuments } from "../utilities/apiHooks";
@@ -38,6 +38,7 @@ const LocationModel = ({ openModel, setOpenModel }) => {
           name: selectedLocation.name,
         })
       );
+      dispatch(resetFormState())
     }
   };
 

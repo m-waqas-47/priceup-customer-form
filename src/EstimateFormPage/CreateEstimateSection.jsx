@@ -253,7 +253,7 @@ const CreateEstimateSection = ({ next, back }) => {
             </Typography>
             <Typography
                 sx={{
-                  fontSize: { lg: 24, md: 20 },
+                  fontSize: { lg: 18, md: 20 },
                   fontWeight: 600,
                   color: "#000000",
                   display: "flex",
@@ -265,15 +265,16 @@ const CreateEstimateSection = ({ next, back }) => {
                Layout : <Box component='span' sx={{color:'#212528 !important',opacity:'70%'}}>{getSelectedLayout?.name}</Box>
               </Typography>
             {/* Dimensions Section */}
-            <Box sx={{ pt: 3 }}>
+            <Box sx={{ pt: 1.5}}>
               <Typography
                 sx={{
-                  fontSize: { lg: 24, md: 20 },
+                  color: "#212528",
+                  fontSize: { lg: 18, md: 14 },
                   fontWeight: 600,
-                  color: "#000000",
+                  lineHeight: "21.86px",
                   display: "flex",
-                  lineHeight: "32.78px",
                   gap: 1,
+                  pb:1 
                 }}
               >
                 Dimensions

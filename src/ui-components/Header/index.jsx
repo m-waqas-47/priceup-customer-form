@@ -4,6 +4,7 @@ import LogoNavBar from "../../Assets/purplelogo.svg";
 import GCSLogo from "../../Assets/GCSLogo.png";
 import "./style.css";
 import LocationModel from "../../EstimateFormPage/LocationModel";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const Header = () => {
   const [openModel, setOpenModel] = useState(true);
@@ -49,11 +50,19 @@ const Header = () => {
             </Typography>
             <Box sx={{ alignSelf: "center" }}>
               <Button
+                endIcon={
+                  <KeyboardArrowDownIcon
+                    sx={{
+                      transform: openModel ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.3s ease-in-out",
+                    }}
+                  />
+                }
                 sx={{
-                  color: "#FFFFFF",                
+                  color: "#FFFFFF",
                   position: "relative",
                   fontSize: "18px",
-                fontWeight: 500,
+                  fontWeight: 500,
                 }}
                 variant="text"
                 onClick={() => setOpenModel(true)}
