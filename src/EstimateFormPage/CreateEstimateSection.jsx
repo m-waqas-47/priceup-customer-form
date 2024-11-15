@@ -1,16 +1,17 @@
-import { InfoOutlined, KeyboardArrowRight } from "@mui/icons-material";
+import { Delete, InfoOutlined, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Box,
   Button,
   FormControlLabel,
   Grid,
+  IconButton,
   Radio,
   Stack,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getEstimateCategory,
@@ -42,6 +43,7 @@ const CreateEstimateSection = ({ next, back }) => {
   const SelectedHardwares = useSelector(getSelectedHardwares);
   const SelectedGlassTypes = useSelector(getSelectedGlassTypes);
   const SelectedFinishes = useSelector(getSelectedFinishes);
+  const [hoveredRow, setHoveredRow] = useState(null);
 
   const SelectedHandles = SelectedHardwares.filter(
     (data) => data.hardware_category_slug === HardwareType.HANDLES
@@ -53,11 +55,22 @@ const CreateEstimateSection = ({ next, back }) => {
   const customValidate =
     getSelectedLayout?._id === "custom"
       ? {
-          dimensions: Yup.object().shape({
-            height: Yup.string().required("Height is required"),
-            width: Yup.string().required("Width is required"),
-            count: Yup.string().required("Quantity is required"),
-          }),
+          dimensions: Yup.array().of(
+            Yup.object().shape({
+              width: Yup.number()
+                .typeError("Width must be a number")
+                .required("Width is required")
+                .min(0, "Width must be greater than or equal to 0"),
+              height: Yup.number()
+                .typeError("Height must be a number")
+                .required("Height is required")
+                .min(0, "Height must be greater than or equal to 0"),
+              count: Yup.number()
+                .typeError("Count must be a number")
+                .required("Count is required")
+                .min(0, "Count must be greater than or equal to 0"),
+            })
+          ),
         }
       : {
           dimensions: Yup.object().shape(
@@ -80,11 +93,7 @@ const CreateEstimateSection = ({ next, back }) => {
   const customInitialState =
     getSelectedLayout?._id === "custom"
       ? {
-          dimensions: {
-            height: "",
-            width: "",
-            count: "",
-          },
+          dimensions: [{ width: "", height: "", count: "" }],
           edgeWork: EstimateDetails?.edgeWork?._id ?? "",
         }
       : {
@@ -156,7 +165,7 @@ const CreateEstimateSection = ({ next, back }) => {
         ...values,
         dimensions:
           getSelectedLayout?._id === "custom"
-            ? [values.dimensions]
+            ? values.dimensions
             : formattedDimensions,
       };
       dispatch(setEstimateDetail(updatedValues));
@@ -170,6 +179,26 @@ const CreateEstimateSection = ({ next, back }) => {
       dispatch(setEstimatesCollection(estimateData));
     },
   });
+  const layoutName =
+    getSelectedLayout?.name === "Custom" &&
+    EstimateCategory === selectedCategory.MIRRORS
+      ? "Mirror"
+      : getSelectedLayout?.name;
+
+  const addRow = () => {
+    formik.setFieldValue("dimensions", [
+      ...formik.values.dimensions,
+      { width: "", height: "", count: "" },
+    ]);
+  };
+  const deleteRow = (index) => {
+    if (index > 0) {
+      formik.setFieldValue(
+        "dimensions",
+        formik.values.dimensions.filter((_, i) => i !== index)
+      );
+    }
+  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -252,20 +281,26 @@ const CreateEstimateSection = ({ next, back }) => {
               Select Your Customizations
             </Typography>
             <Typography
-                sx={{
-                  fontSize: { lg: 18, md: 20 },
-                  fontWeight: 600,
-                  color: "#000000",
-                  display: "flex",
-                  lineHeight: "32.78px",
-                  gap: 1,
-                  pt: 2.5,
-                }}
+              sx={{
+                fontSize: { lg: 18, md: 20 },
+                fontWeight: 600,
+                color: "#000000",
+                display: "flex",
+                lineHeight: "32.78px",
+                gap: 1,
+                pt: 2.5,
+              }}
+            >
+              Layout :{" "}
+              <Box
+                component="span"
+                sx={{ color: "#212528 !important", opacity: "70%" }}
               >
-               Layout : <Box component='span' sx={{color:'#212528 !important',opacity:'70%'}}>{getSelectedLayout?.name}</Box>
-              </Typography>
+                {layoutName}
+              </Box>
+            </Typography>
             {/* Dimensions Section */}
-            <Box sx={{ pt: 1.5}}>
+            <Box sx={{ pt: 1.5 }}>
               <Typography
                 sx={{
                   color: "#212528",
@@ -274,7 +309,7 @@ const CreateEstimateSection = ({ next, back }) => {
                   lineHeight: "21.86px",
                   display: "flex",
                   gap: 1,
-                  pb:1 
+                  pb: 1,
                 }}
               >
                 Dimensions
@@ -282,158 +317,183 @@ const CreateEstimateSection = ({ next, back }) => {
               <Grid container spacing={2}>
                 {getSelectedLayout._id === "custom" ? (
                   <>
-                    <Grid item md={3} xs={6}>
-                      <Typography
+                    {formik.values.dimensions.map((row, index) => (
+                      <Grid
+                        item
+                        xs={12}
+                        key={index}
+                        onMouseEnter={() => setHoveredRow(index)}
+                        onMouseLeave={() => setHoveredRow(null)}
+                      >
+                        <Grid container spacing={2}>
+                          <Grid item md={3} xs={6}>
+                            <Typography
+                              sx={{
+                                fontSize: 16,
+                                fontWeight: 600,
+                                color: { sm: "black", xs: "white" },
+                                display: "flex",
+                              }}
+                            >
+                              Width{" "}
+                              <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                                *
+                              </Box>{" "}
+                              :
+                            </Typography>
+                            <TextField
+                              type="number"
+                              size="small"
+                              variant="outlined"
+                              name={`dimensions[${index}].width`}
+                              placeholder="Width"
+                              InputProps={{
+                                inputProps: { min: 0 },
+                              }}
+                              value={formik.values.dimensions[index].width}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                formik.touched.dimensions?.[index]?.width &&
+                                Boolean(
+                                  formik.errors.dimensions?.[index]?.width
+                                )
+                              }
+                              helperText={
+                                formik.touched.dimensions?.[index]?.width &&
+                                formik.errors.dimensions?.[index]?.width
+                              }
+                              style={{
+                                display: "block",
+                                width: "100%",
+                              }}
+                            />
+                          </Grid>
+                          <Grid item md={3} xs={6}>
+                            <Typography
+                              sx={{
+                                fontSize: 16,
+                                fontWeight: 600,
+                                color: { sm: "black", xs: "white" },
+                                display: "flex",
+                              }}
+                            >
+                              Height{" "}
+                              <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                                *
+                              </Box>{" "}
+                              :
+                            </Typography>
+                            <TextField
+                              type="number"
+                              size="small"
+                              variant="outlined"
+                              name={`dimensions[${index}].height`}
+                              placeholder="Height"
+                              InputProps={{
+                                inputProps: { min: 0 },
+                              }}
+                              value={formik.values.dimensions[index].height}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                formik.touched.dimensions?.[index]?.height &&
+                                Boolean(
+                                  formik.errors.dimensions?.[index]?.height
+                                )
+                              }
+                              helperText={
+                                formik.touched.dimensions?.[index]?.height &&
+                                formik.errors.dimensions?.[index]?.height
+                              }
+                              style={{
+                                display: "block",
+                                width: "100%",
+                              }}
+                            />
+                          </Grid>
+                          <Grid item md={3} xs={6}>
+                            <Typography
+                              sx={{
+                                fontSize: 16,
+                                fontWeight: 600,
+                                color: { sm: "black", xs: "white" },
+                                display: "flex",
+                              }}
+                            >
+                              Quantity{" "}
+                              <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
+                                *
+                              </Box>{" "}
+                              :
+                            </Typography>
+                            <TextField
+                              type="number"
+                              size="small"
+                              variant="outlined"
+                              name={`dimensions[${index}].count`}
+                              placeholder="Quantity"
+                              InputProps={{
+                                inputProps: { min: 0 },
+                              }}
+                              value={formik.values.dimensions[index].count}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                formik.touched.dimensions?.[index]?.count &&
+                                Boolean(
+                                  formik.errors.dimensions?.[index]?.count
+                                )
+                              }
+                              helperText={
+                                formik.touched.dimensions?.[index]?.count &&
+                                formik.errors.dimensions?.[index]?.count
+                              }
+                              style={{
+                                display: "block",
+                                width: "100%",
+                              }}
+                            />
+                          </Grid>
+                          {index > 0 && hoveredRow === index && (
+                            <Grid
+                              item
+                              md={3}
+                              xs={2}
+                              sx={{ display: "flex", alignItems: "end" }}
+                            >
+                              <IconButton
+                                onClick={() => deleteRow(index)}
+                                aria-label="delete row"
+                              >
+                                <Delete sx={{ color: "#101828" }} />
+                              </IconButton>
+                            </Grid>
+                          )}
+                        </Grid>
+                      </Grid>
+                    ))}
+
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        onClick={addRow}
                         sx={{
-                          fontSize: 16,
-                          fontWeight: 600,
-                          color: { sm: "black", xs: "white" },
                           display: "flex",
+                          boxShadow: "0px 1px 2px rgba(16, 24, 40, 0.05)",
+                          color: "white",
+                          textTransform: "initial",
+                          height: 40,
+                          fontSize: 20,
+                          marginX: "auto",
+                          backgroundColor: "#8477da",
+                          "&:hover": {
+                            backgroundColor: "#8477da",
+                          },
                         }}
                       >
-                        Width{" "}
-                        <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
-                          *
-                        </Box>{" "}
-                        :
-                      </Typography>
-
-                      <TextField
-                        type="number"
-                        size="small"
-                        variant="outlined"
-                        className="custom-textfield-purple"
-                        name="dimensions.width"
-                        placeholder="Width"
-                        InputProps={{
-                          inputProps: { min: 0 },
-                        }}
-                        style={{
-                          display: "block",
-                          width: { md: "28%", xs: "20%" },
-                        }}
-                        value={formik.values.dimensions.width}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.dimensions?.width &&
-                          Boolean(formik.errors.dimensions?.width)
-                        }
-                      />
-                      {formik.touched.dimensions?.width &&
-                        formik.errors.dimensions?.width && (
-                          <Typography
-                            sx={{
-                              color: "red",
-                              fontSize: "12px",
-                              mt: "4px",
-                            }}
-                          >
-                            {formik.errors.dimensions?.width}.
-                          </Typography>
-                        )}
-                    </Grid>
-                    <Grid item md={3} xs={6}>
-                      <Typography
-                        sx={{
-                          fontSize: 16,
-                          fontWeight: 600,
-                          color: { sm: "black", xs: "white" },
-                          display: "flex",
-                        }}
-                      >
-                        Height{" "}
-                        <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
-                          *
-                        </Box>{" "}
-                        :
-                      </Typography>
-
-                      <TextField
-                        type="number"
-                        size="small"
-                        variant="outlined"
-                        name="dimensions.height"
-                        className="custom-textfield-purple"
-                        InputProps={{
-                          inputProps: { min: 0 },
-                        }}
-                        placeholder="Height"
-                        style={{
-                          display: "block",
-                          width: { md: "28%", xs: "20%" },
-                        }}
-                        value={formik.values.dimensions.height}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.dimensions?.height &&
-                          Boolean(formik.errors.dimensions?.height)
-                        }
-                      />
-                      {formik.touched.dimensions?.height &&
-                        formik.errors.dimensions?.height && (
-                          <Typography
-                            sx={{
-                              color: "red",
-                              fontSize: "12px",
-                              mt: "4px",
-                            }}
-                          >
-                            {formik.errors.dimensions?.height}.
-                          </Typography>
-                        )}
-                    </Grid>
-                    <Grid item md={3} xs={6}>
-                      <Typography
-                        sx={{
-                          fontSize: 16,
-                          fontWeight: 600,
-                          color: { sm: "black", xs: "white" },
-                          display: "flex",
-                        }}
-                      >
-                        Quantity{" "}
-                        <Box color="red" fontSize="17px" sx={{ px: 0.3 }}>
-                          *
-                        </Box>{" "}
-                        :
-                      </Typography>
-
-                      <TextField
-                        type="number"
-                        size="small"
-                        variant="outlined"
-                        name="dimensions.count"
-                        className="custom-textfield-purple"
-                        InputProps={{
-                          inputProps: { min: 0 },
-                        }}
-                        placeholder="Quantity"
-                        style={{
-                          display: "block",
-                          width: { md: "28%", xs: "20%" },
-                        }}
-                        value={formik.values.dimensions.count}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.dimensions?.count &&
-                          Boolean(formik.errors.dimensions?.count)
-                        }
-                      />
-                      {formik.touched.dimensions?.count &&
-                        formik.errors.dimensions?.count && (
-                          <Typography
-                            sx={{
-                              color: "red",
-                              fontSize: "12px",
-                              mt: "4px",
-                            }}
-                          >
-                            {formik.errors.dimensions?.count}.
-                          </Typography>
-                        )}
+                        Add Row
+                      </Button>
                     </Grid>
                   </>
                 ) : (
@@ -543,7 +603,12 @@ const CreateEstimateSection = ({ next, back }) => {
                 {}
               </Grid>
             </Box>
-            <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+            <hr
+              style={{
+                border: "1px solid rgb(209, 212, 219)",
+                marginTop: "40px",
+              }}
+            />
             {/* Glass Finish Options */}
             {getSelectedLayout._id === "custom" &&
             EstimateCategory === selectedCategory.MIRRORS ? (
@@ -633,7 +698,12 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
               </>
             ) : (
               ""
@@ -720,7 +790,12 @@ const CreateEstimateSection = ({ next, back }) => {
                 </Typography>
               )}
             </Box>
-            <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+            <hr
+              style={{
+                border: "1px solid rgb(209, 212, 219)",
+                marginTop: "40px",
+              }}
+            />
 
             {getSelectedLayout?._id === "custom" &&
             EstimateCategory === selectedCategory.MIRRORS ? (
@@ -810,7 +885,12 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
               </>
             ) : (
               <>
@@ -899,7 +979,12 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
                 <Box sx={{ pt: 5 }}>
                   <Typography
                     sx={{
@@ -986,7 +1071,12 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
                 <Box sx={{ pt: 5 }}>
                   <Typography
                     sx={{
@@ -1073,11 +1163,16 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Typography>
                   )}
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
               </>
             )}
 
-            {EstimateCategory !== selectedCategory.WINECELLARS  ? (
+            {EstimateCategory !== selectedCategory.WINECELLARS ? (
               ""
             ) : (
               <>
@@ -1153,13 +1248,18 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Box>
                   </>
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
               </>
             )}
             {getSelectedLayout._id === "custom" &&
             EstimateCategory === selectedCategory.MIRRORS ? (
               <>
-                <Box sx={{ pt: 5, }}>
+                <Box sx={{ pt: 5 }}>
                   <Typography
                     sx={{
                       fontSize: { lg: 24, md: 20 },
@@ -1300,7 +1400,12 @@ const CreateEstimateSection = ({ next, back }) => {
                     </Grid>
                   </Grid>
                 </Box>
-                <hr style={{ border:'1px solid rgb(209, 212, 219)', marginTop: "40px" }} />
+                <hr
+                  style={{
+                    border: "1px solid rgb(209, 212, 219)",
+                    marginTop: "40px",
+                  }}
+                />
               </>
             ) : (
               ""
