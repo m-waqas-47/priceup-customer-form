@@ -5,9 +5,12 @@ import GCSLogo from "../../Assets/GCSLogo.png";
 import "./style.css";
 import LocationModel from "../../EstimateFormPage/LocationModel";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { getLocation } from "../../redux/globalEstimateForm";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [openModel, setOpenModel] = useState(true);
+  const Location = useSelector(getLocation);
   return (
     <>
       <Box
@@ -67,7 +70,7 @@ const Header = () => {
                 variant="text"
                 onClick={() => setOpenModel(true)}
               >
-                Change Location
+                {Location?.name === "" ? "Select Location" : Location?.name}
               </Button>
             </Box>
           </Box>
