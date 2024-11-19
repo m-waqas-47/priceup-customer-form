@@ -474,18 +474,18 @@ const CreateEstimateSection = ({ next, back }) => {
                       </Grid>
                     ))}
 
-                    <Grid item xs={12}>
+                    <Grid xs={12} sx={{pt:2,textAlign:'end',mr:4}}>
                       <Button
-                        fullWidth
+                        // fullWidth
                         onClick={addRow}
                         sx={{
-                          display: "flex",
+                          // display: "flex",
                           boxShadow: "0px 1px 2px rgba(16, 24, 40, 0.05)",
                           color: "white",
                           textTransform: "initial",
                           height: 40,
                           fontSize: 20,
-                          marginX: "auto",
+                          // marginX: "auto",
                           backgroundColor: "#8477da",
                           "&:hover": {
                             backgroundColor: "#8477da",
