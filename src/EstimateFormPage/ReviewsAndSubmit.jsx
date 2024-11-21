@@ -53,6 +53,11 @@ const validationSchema = yup.object({
 const ReviewsAndSubmit = ({ next, back }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = new URLSearchParams(window.location.search);
+  const utmParams = {
+    utm_source: params.get('utm_source') || '',
+    utm_medium: params.get('utm_medium') || '',
+  };
   const ProjectDetail = useSelector(getProjectDetails);
   const selectedLayout = useSelector(getEstimateLayout);
   const totalQuotes = useSelector(getEstimates);
@@ -102,6 +107,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
         customerDetail: customerDetails,
         quotes: totalQuotes,
         contactNote : estimatesString,
+        utm_parameters:utmParams
       };
       createEstimate(
         { data, apiRoute: `${backendURL}/form-request` },
