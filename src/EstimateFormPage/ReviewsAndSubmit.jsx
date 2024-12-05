@@ -55,8 +55,8 @@ const ReviewsAndSubmit = ({ next, back }) => {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const utmParams = {
-    utm_source: params.get('utm_source') || '',
-    utm_medium: params.get('utm_medium') || '',
+    utm_source: params.get("utm_source") || "",
+    utm_medium: params.get("utm_medium") || "",
   };
   const ProjectDetail = useSelector(getProjectDetails);
   const selectedLayout = useSelector(getEstimateLayout);
@@ -106,8 +106,8 @@ const ReviewsAndSubmit = ({ next, back }) => {
         projectDetail: newValues,
         customerDetail: customerDetails,
         quotes: totalQuotes,
-        contactNote : estimatesString,
-        utm_parameters:utmParams
+        contactNote: estimatesString,
+        utm_parameters: utmParams,
       };
       createEstimate(
         { data, apiRoute: `${backendURL}/form-request` },
@@ -157,7 +157,7 @@ const ReviewsAndSubmit = ({ next, back }) => {
                 mb: 1,
               }}
             >
-              Review and Submit for Quote
+              Review and Submit your Quote
             </Typography>
           </Box>
         </Stack>
@@ -399,17 +399,19 @@ const ReviewsAndSubmit = ({ next, back }) => {
                         </Typography>
                       )}
                       <Box sx={{ display: "flex", gap: 0.5 }}>
-                        <Typography>Dimensions :</Typography>
-                        {data?.estimateDetail?.dimensions &&
-                        data?.layout?._id === "custom"
-                          ? renderMeasurementSidesForShower(
-                              data?.estimateDetail?.dimensions
-                            )
-                          : renderMeasurementSides(
-                              "create",
-                              data?.estimateDetail?.dimensions,
-                              selectedLayout?._id
-                            )}
+                        <Typography variant="h6" sx={{ fontSize: "18px" }}>
+                          Dimensions ={" "}
+                          {data?.estimateDetail?.dimensions &&
+                          data?.layout?._id === "custom"
+                            ? renderMeasurementSidesForShower(
+                                data?.estimateDetail?.dimensions
+                              )
+                            : renderMeasurementSides(
+                                "create",
+                                data?.estimateDetail?.dimensions,
+                                selectedLayout?._id
+                              )}
+                        </Typography>
                       </Box>
 
                       {/* {data?.estimateDetail?.dimensions &&
